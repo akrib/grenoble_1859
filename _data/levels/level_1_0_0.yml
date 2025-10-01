@@ -1,5 +1,8 @@
-title: "Rivière"
-description: "Une rivière claire bloque ton passage."
+title: "level_1_0_0"
+description: "Une vaste plaine verdoyante s'étend devant toi."
+type: "plaine"
 exits:
+  n: true
+  s: true
+  e: true
   w: true
-type: "eau"

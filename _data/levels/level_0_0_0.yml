@@ -1,8 +1,8 @@
-title: "Plaine centrale"
-description: "Tu es au centre de la plaine."
+title: "level_0_0_0"
+description: "Des arbres denses et sombres remplissent la zone."
+type: "foret"
 exits:
   n: true
-  e: true
   s: true
+  e: true
   w: true
-type: "plaine"
