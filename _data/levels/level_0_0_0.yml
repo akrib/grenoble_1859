@@ -1,7 +1,8 @@
-title: "Entrée du donjon"
-description: >
-  Tu es à l’entrée du donjon. Un vent froid souffle et tu sens une odeur de moisissure.
+title: "Plaine centrale"
+description: "Tu es au centre de la plaine."
 exits:
   n: true
   e: true
-  down: true
+  s: true
+  w: true
+type: "plaine"
