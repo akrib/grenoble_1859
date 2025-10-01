@@ -1,0 +1,32 @@
+<div class="navigation">
+  {% if page.exits.n %}
+    <button onclick="movePlayer(loadCharacter(), 0, 1)">N</button>
+  {% endif %}
+  {% if page.exits.ne %}
+    <button onclick="movePlayer(loadCharacter(), 1, 1)">NE</button>
+  {% endif %}
+  {% if page.exits.e %}
+    <button onclick="movePlayer(loadCharacter(), 1, 0)">E</button>
+  {% endif %}
+  {% if page.exits.se %}
+    <button onclick="movePlayer(loadCharacter(), 1, -1)">SE</button>
+  {% endif %}
+  {% if page.exits.s %}
+    <button onclick="movePlayer(loadCharacter(), 0, -1)">S</button>
+  {% endif %}
+  {% if page.exits.sw %}
+    <button onclick="movePlayer(loadCharacter(), -1, -1)">SW</button>
+  {% endif %}
+  {% if page.exits.w %}
+    <button onclick="movePlayer(loadCharacter(), -1, 0)">W</button>
+  {% endif %}
+  {% if page.exits.nw %}
+    <button onclick="movePlayer(loadCharacter(), -1, 1)">NW</button>
+  {% endif %}
+  {% if page.exits.up %}
+    <button onclick="movePlayer(loadCharacter(), 0, 0, 1)">Up</button>
+  {% endif %}
+  {% if page.exits.down %}
+    <button onclick="movePlayer(loadCharacter(), 0, 0, -1)">Down</button>
+  {% endif %}
+</div>
