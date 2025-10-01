@@ -1,8 +1,0 @@
-title: "level_-31_16_0"
-description: "Des bâtiments en pierre et en bois forment un petit village."
-type: "ville"
-exits:
-  n: true
-  s: true
-  e: true
-  w: true

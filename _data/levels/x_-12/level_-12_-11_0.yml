@@ -1,0 +1,8 @@
+title: "level_-12_-11_0"
+description: "Une vaste plaine verdoyante."
+type: "plaine"
+exits:
+  n: true
+  s: true
+  e: true
+  w: true

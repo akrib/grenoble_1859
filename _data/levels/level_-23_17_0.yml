@@ -1,8 +1,0 @@
-title: "level_-23_17_0"
-description: "Une vaste plaine verdoyante s'étend devant toi."
-type: "plaine"
-exits:
-  n: true
-  s: true
-  e: true
-  w: true

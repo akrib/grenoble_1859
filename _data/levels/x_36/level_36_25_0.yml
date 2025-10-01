@@ -1,0 +1,8 @@
+title: "level_36_25_0"
+description: "Des arbres denses et sombres."
+type: "foret"
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
