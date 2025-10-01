@@ -66,15 +66,18 @@ function getLevelId(char) {
   return `level_${char.position.x}_${char.position.y}`;
 }
 
-function movePlayer(char, dx, dy) {
+function movePlayer(char, dx, dy, dz = 0) {
+  if (!char.position.z) char.position.z = 0; // ajouter z si absent
+
   char.position.x += dx;
   char.position.y += dy;
+  char.position.z += dz;
   saveCharacter(char);
 
-  const levelId = getLevelId(char);
-  // Exemple : redirige vers level_-23_42.html
+  const levelId = `level_${char.position.x}_${char.position.y}_${char.position.z}`;
   window.location.href = `${levelId}.html`;
 }
+
 // Au chargement
 document.addEventListener("DOMContentLoaded", () => {
   const char = loadCharacter();
