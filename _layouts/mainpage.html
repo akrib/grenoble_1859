@@ -57,7 +57,7 @@
         position: { x: 0, y: 0, z: 0 }
       };
       localStorage.setItem("character", JSON.stringify(char));
-      window.location.href = "{{ '/game.html' | relative_url }}";
+      window.location.href = "{{ site.baseurl }}/grenoble/";
     }
 
     // Fonction pour charger une partie existante
@@ -67,7 +67,7 @@
         alert("Aucune partie sauvegardée trouvée !");
         return;
       }
-      window.location.href = "{{ '/game.html' | relative_url }}";
+      window.location.href = "{{ site.baseurl }}/grenoble/";
     }
 
     document.getElementById("new-game").addEventListener("click", startNewGame);
