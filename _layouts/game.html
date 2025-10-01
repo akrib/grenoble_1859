@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title }} - Jeu MUD</title>
+  <link rel="stylesheet" href="{{ "/assets/css/game.css" | relative_url }}">
+</head>
+<body>
+  <div class="game-container">
+
+    <!-- Colonne gauche : fiche de personnage -->
+    <aside class="sidebar">
+      {% include character.html %}
+    </aside>
+
+    <!-- Zone centrale : contenu du niveau -->
+    <main class="level">
+      <h1>{{ page.title }}</h1>
+      <div class="description">
+        {{ content }}
+      </div>
+    </main>
+
+    <!-- Colonne droite : mini-map -->
+    <aside class="sidebar">
+      {% include minimap.html %}
+    </aside>
+
+  </div>
+
+  <script src="{{ "/assets/js/game.js" | relative_url }}"></script>
+</body>
+</html>
