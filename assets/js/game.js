@@ -5,8 +5,11 @@ function loadCharacter() {
     char = {
       name: "Aventurier",
       level: 1,
+      xp: 0,
       hp: 20,
-      gold: 0
+      gold: 0,
+      inventory: [],
+      position: { x: 0, y: 0 } // coordonnées de départ
     };
     localStorage.setItem("character", JSON.stringify(char));
   } else {
@@ -15,13 +18,34 @@ function loadCharacter() {
   return char;
 }
 
-// Mise à jour de la fiche
+function saveCharacter(char) {
+  localStorage.setItem("character", JSON.stringify(char));
+}urn char;
+}
+
 function updateCharacterSheet(char) {
   document.getElementById("char-name").textContent = char.name;
   document.getElementById("char-level").textContent = char.level;
+  document.getElementById("char-xp").textContent = char.xp;
   document.getElementById("char-hp").textContent = char.hp;
   document.getElementById("char-gold").textContent = char.gold;
+
+  // Position
+  const posEl = document.getElementById("char-position");
+  if (posEl) {
+    posEl.textContent = `(${char.position.x}, ${char.position.y})`;
+  }
+
+  // Inventaire
+  const inv = document.getElementById("char-inventory");
+  inv.innerHTML = "";
+  char.inventory.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    inv.appendChild(li);
+  });
 }
+
 
 // Exemple simple de rendu mini-map
 function drawMinimap() {
@@ -38,6 +62,19 @@ function drawMinimap() {
   ctx.fill();
 }
 
+function getLevelId(char) {
+  return `level_${char.position.x}_${char.position.y}`;
+}
+
+function movePlayer(char, dx, dy) {
+  char.position.x += dx;
+  char.position.y += dy;
+  saveCharacter(char);
+
+  const levelId = getLevelId(char);
+  // Exemple : redirige vers level_-23_42.html
+  window.location.href = `${levelId}.html`;
+}
 // Au chargement
 document.addEventListener("DOMContentLoaded", () => {
   const char = loadCharacter();
