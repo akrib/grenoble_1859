@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title }} - Jeu MUD</title>
+  <link rel="stylesheet" href="{{ "/assets/css/game.css" | relative_url }}">
+</head>
+<body class="mainpage">
+
+  <div class="menu-container">
+    <h1>{{ page.title }}</h1>
+    <div id="menu">
+      <button id="new-game">Nouvelle Partie</button>
+      <button id="continue-game" style="display:none;">Continuer</button>
+    </div>
+  </div>
+
+  <script src="{{ "/assets/js/mainpage.js" | relative_url }}"></script>
+</body>
+</html>
