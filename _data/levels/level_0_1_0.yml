@@ -1,0 +1,5 @@
+title: "Petite forêt"
+description: "Un petit bois dense."
+exits:
+  s: true
+type: "foret"
