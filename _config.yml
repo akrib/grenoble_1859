@@ -15,7 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: Grenoble 1859
 domain: akrib.github.io
-baseurl: /site_camarilla_dauphinoise/ # the subpath of your site, e.g. /blog
+baseurl: /grenoble_1859/ # the subpath of your site, e.g. /blog
 url: "https://akrib.github.io"
 github_username:  akrib
 minimal_mistakes_skin: default
