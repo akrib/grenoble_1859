@@ -1,35 +1,98 @@
+---
+layout: null
+---
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>{{ page.title }} - Jeu MUD</title>
-  <link rel="stylesheet" href="{{ "/assets/css/game.css" | relative_url }}">
+  <title>{{ page.title | default: "Jeu MUD" }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+
+    #sidebar {
+      width: 250px;
+      background-color: #f4f4f4;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      border-right: 1px solid #ccc;
+    }
+
+    #character-sheet {
+      margin-bottom: 20px;
+    }
+
+    #map-canvas {
+      border: 1px solid #333;
+      background-color: #222;
+    }
+
+    #main {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #level-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #level-description {
+      margin-bottom: 20px;
+    }
+
+    #navigation button {
+      margin: 2px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    #navigation {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+  </style>
 </head>
 <body>
-  <div class="game-container">
 
-    <!-- Colonne gauche : fiche de personnage -->
-    <aside class="sidebar">
-      {% include character.html %}
-    </aside>
+  <div id="sidebar">
+    <div id="character-sheet">
+      <!-- Fiche du personnage générée par JS -->
+    </div>
 
-    <!-- Zone centrale : contenu du niveau -->
-    <main class="level">
-      <h1>{{ page.title }}</h1>
-      <div class="description">
-        {{ content }}
-      {% include navigation.html %}
-      </div>
-      
-    </main>
-
-    <!-- Colonne droite : mini-map -->
-    <aside class="sidebar">
-      {% include minimap.html %}
-    </aside>
-
+    <canvas id="map-canvas" width="60" height="60"></canvas>
+    <p style="text-align:center; font-size: 12px;">Mini-map</p>
   </div>
 
-  <script src="{{ "/assets/js/game.js" | relative_url }}"></script>
+  <div id="main">
+    <div id="level-title">{{ page.title | default: "Titre du niveau" }}</div>
+    <div id="level-description">{{ page.description | default: "Description du niveau" }}</div>
+
+    <div id="navigation">
+      <!-- Boutons de navigation générés dynamiquement par game.js -->
+    </div>
+  </div>
+
+  <!-- Bibliothèque YAML pour parser les fichiers -->
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <!-- Script du jeu -->
+  <script src="{{ '/assets/js/game.js' | relative_url }}"></script>
+
+  <!-- Injection possible de variables YAML du level si nécessaire -->
+  <script>
+    window.levelData = {{ page | jsonify }};
+  </script>
+
 </body>
 </html>
