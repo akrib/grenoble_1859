@@ -47,19 +47,53 @@ function updateCharacterSheet(char) {
 }
 
 
-// Exemple simple de rendu mini-map
 function drawMinimap() {
   const canvas = document.getElementById("map-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#333";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Exemple : joueur au centre
-  ctx.fillStyle = "yellow";
-  ctx.beginPath();
-  ctx.arc(canvas.width/2, canvas.height/2, 5, 0, 2 * Math.PI);
-  ctx.fill();
+  const size = 20; // taille de chaque carré
+  const gridSize = 3; // 3x3 autour du joueur
+  const half = Math.floor(gridSize / 2);
+
+  const char = loadCharacter();
+  const x0 = char.position.x;
+  const y0 = char.position.y;
+  const z0 = char.position.z || 0;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let dy = -half; dy <= half; dy++) {
+    for (let dx = -half; dx <= half; dx++) {
+      const lx = x0 + dx;
+      const ly = y0 + dy;
+      const levelId = `level_${lx}_${ly}_${z0}`;
+      const level = levels[levelId];
+
+      let color = "#000"; // par défaut noir si la case n'existe pas
+      if (level) {
+        switch(level.type) {
+          case "ville": color = "gray"; break;
+          case "foret": color = "green"; break;
+          case "eau": color = "blue"; break;
+          case "plaine": color = "#7cfc00"; break; // vert clair pour plaine
+        }
+      }
+
+      // Calcul position dans la mini-map
+      const px = (dx + half) * size;
+      const py = (dy + half) * size;
+
+      ctx.fillStyle = color;
+      ctx.fillRect(px, py, size, size);
+
+      // Joueur au centre
+      if (dx === 0 && dy === 0) {
+        ctx.fillStyle = "yellow";
+        ctx.fillRect(px + 4, py + 4, size - 8, size - 8);
+      }
+    }
+  }
 }
 
 function getLevelId(char) {
