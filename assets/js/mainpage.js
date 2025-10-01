@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
       gold: 0
     };
     localStorage.setItem("character", JSON.stringify(char));
-    window.location.href = "{{ '/niveau1/' | relative_url }}"; // redirige vers le premier niveau
+    window.location.href = "{{ site.baseurl }}/niveau1/"; // redirige vers le premier niveau
   });
 
   // Continuer
   continueBtn.addEventListener("click", () => {
-    window.location.href = "{{ '/niveau1/' | relative_url }}";
+    window.location.href = "{{ site.baseurl }}/niveau1/";
   });
 });
