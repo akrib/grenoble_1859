@@ -92,6 +92,7 @@ layout: null
   <!-- Injection possible de variables YAML du level si nécessaire -->
   <script>
     window.levelData = {{ page | jsonify }};
+    const BASE_URL = "{{ site.baseurl }}"; // /grenoble_1859
   </script>
 
 </body>
