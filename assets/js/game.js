@@ -50,10 +50,13 @@ function getLevelDir(x) {
 
 async function loadYAMLLevel(levelId, x) {
   const dir = getLevelDir(x);
-  const url = `${dir}/${levelId}.yml`;
+  const url = `${dir}/${levelId}.yml`; // absolu par rapport à la racine
   try {
     const res = await fetch(url);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.warn("Level introuvable:", url);
+      return null;
+    }
     const text = await res.text();
     return jsyaml.load(text);
   } catch (e) {
@@ -61,6 +64,7 @@ async function loadYAMLLevel(levelId, x) {
     return null;
   }
 }
+
 
 async function loadSurroundingLevels(char) {
   const x0 = char.position.x;
