@@ -42,7 +42,7 @@ function updateCharacterSheet(char) {
 // Gestion des niveaux
 // ----------------------
 function getLevelDir(x) {
-  return `/assets/levels/x_${x}`;
+  return `_site/assets/levels/x_${x}`;
 }
 
 async function loadYAMLLevel(levelId, x) {
