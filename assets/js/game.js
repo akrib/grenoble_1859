@@ -2,47 +2,42 @@
 // Gestion du personnage
 // ----------------------
 function loadCharacter() {
+  const defaultChar = {
+    name: "Aventurier",
+    level: 1,
+    xp: 0,
+    gold: 0,
+    inventory: [],
+    position: { x: 0, y: 0, z: 0 },
+
+    // Caractéristiques COC
+    stats: { force: 1, dex: 1, con: 0, int: 0, sag: 0, cha: 0 },
+
+    // Compétences
+    skills: { corpsACorps: 2, distance: 1, magie: 0, discretion: 1, perception: 1 },
+
+    // Combat
+    hpMax: 20,
+    hp: 20,
+    defense: 12,
+    initiative: 1,
+    attackBonus: 3,
+    damageDice: "1d8",
+    damageBonus: 1
+  };
+
   let char = localStorage.getItem("character");
   if (!char) {
-    char = {
-      name: "Aventurier",
-      level: 1,
-      xp: 0,
-      gold: 0,
-      inventory: [],
-
-      // --- Caractéristiques (bonus appliqués aux jets)
-      stats: {
-        force: 1,
-        dex: 1,
-        con: 0,
-        int: 0,
-        sag: 0,
-        cha: 0
-      },
-
-      // --- Compétences clés (COC)
-      skills: {
-        corpsACorps: 2,
-        distance: 1,
-        magie: 0,
-        discretion: 1,
-        perception: 1
-      },
-
-      // --- Combat
-      hpMax: 20,
-      hp: 20,
-      defense: 12,      // DEF = 10 + Dex + bonus armure
-      initiative: 1,    // mod Dex
-      attackBonus: 3,   // mod Force + progression
-      damageDice: "1d8",
-      damageBonus: 1
-    };
+    char = defaultChar;
     localStorage.setItem("character", JSON.stringify(char));
   } else {
     char = JSON.parse(char);
+    // Fusion avec les valeurs par défaut pour ajouter les propriétés manquantes
+    char = { ...defaultChar, ...char };
+    char.stats = { ...defaultChar.stats, ...char.stats };
+    char.skills = { ...defaultChar.skills, ...char.skills };
   }
+
   return char;
 }
 
