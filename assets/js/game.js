@@ -43,7 +43,9 @@ function updateCharacterSheet(char) {
 // ----------------------
 function getLevelDir(x) {
   // URL absolue basée sur l'origine du site
-  return window.location.origin + "/grenoble_1859/assets/levels/x_" + x;
+  //return window.location.origin + "/grenoble_1859/assets/levels/x_" + x;
+  return `${BASE_URL}/assets/levels/x_${x}`;
+
 }
 
 async function loadYAMLLevel(levelId, x) {
