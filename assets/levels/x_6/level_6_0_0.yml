@@ -1,6 +1,6 @@
 title: "level_6_0_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un chemin battu serpentant entre les régions."
+type: "route"
 exits:
   n: true
   s: true

@@ -1,6 +1,6 @@
 title: "level_47_-3_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une forêt dense et ombragée."
+type: "foret"
 exits:
   n: true
   s: true

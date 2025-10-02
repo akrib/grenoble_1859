@@ -1,6 +1,6 @@
 title: "level_48_17_0"
-description: "Un petit village de pierre et bois."
-type: "ville"
+description: "Une vaste plaine verdoyante."
+type: "plaine"
 exits:
   n: true
   s: true

@@ -1,6 +1,6 @@
 title: "level_-37_-13_0"
-description: "Des arbres denses et sombres."
-type: "foret"
+description: "Un relief escarpé et difficile d'accès."
+type: "montagne"
 exits:
   n: true
   s: true

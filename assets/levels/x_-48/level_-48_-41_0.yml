@@ -1,6 +1,6 @@
 title: "level_-48_-41_0"
-description: "Une large rivière bloque le passage."
-type: "eau"
+description: "Une forêt dense et ombragée."
+type: "foret"
 exits:
   n: true
   s: true

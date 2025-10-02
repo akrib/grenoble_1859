@@ -1,6 +1,6 @@
 title: "level_4_45_0"
-description: "Des arbres denses et sombres."
-type: "foret"
+description: "Une rivière sinueuse traverse le terrain."
+type: "eau"
 exits:
   n: true
   s: true

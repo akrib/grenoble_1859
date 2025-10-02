@@ -1,6 +1,6 @@
 title: "level_-29_10_0"
-description: "Un petit village de pierre et bois."
-type: "ville"
+description: "Une forêt dense et ombragée."
+type: "foret"
 exits:
   n: true
   s: true

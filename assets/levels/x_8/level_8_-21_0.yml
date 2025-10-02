@@ -1,6 +1,6 @@
 title: "level_8_-21_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un désert aride et brûlant."
+type: "desert"
 exits:
   n: true
   s: true

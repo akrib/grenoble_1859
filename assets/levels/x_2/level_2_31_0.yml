@@ -1,5 +1,5 @@
 title: "level_2_31_0"
-description: "Des arbres denses et sombres."
+description: "Une forêt dense et ombragée."
 type: "foret"
 exits:
   n: true

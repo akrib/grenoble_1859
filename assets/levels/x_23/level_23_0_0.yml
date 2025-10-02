@@ -1,6 +1,6 @@
 title: "level_23_0_0"
-description: "Des arbres denses et sombres."
-type: "foret"
+description: "Un chemin battu serpentant entre les régions."
+type: "route"
 exits:
   n: true
   s: true

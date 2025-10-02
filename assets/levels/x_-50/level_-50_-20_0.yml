@@ -1,6 +1,6 @@
 title: "level_-50_-20_0"
-description: "Une large rivière bloque le passage."
-type: "eau"
+description: "Un relief escarpé et difficile d'accès."
+type: "montagne"
 exits:
   n: true
   s: true

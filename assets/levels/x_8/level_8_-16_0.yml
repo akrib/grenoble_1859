@@ -1,6 +1,6 @@
 title: "level_8_-16_0"
-description: "Un petit village de pierre et bois."
-type: "ville"
+description: "Un désert aride et brûlant."
+type: "desert"
 exits:
   n: true
   s: true

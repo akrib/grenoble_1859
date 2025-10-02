@@ -1,6 +1,6 @@
 title: "level_-50_28_0"
-description: "Une large rivière bloque le passage."
-type: "eau"
+description: "Une vaste plaine verdoyante."
+type: "plaine"
 exits:
   n: true
   s: true

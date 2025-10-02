@@ -1,6 +1,6 @@
 title: "level_1_-39_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une rivière sinueuse traverse le terrain."
+type: "eau"
 exits:
   n: true
   s: true

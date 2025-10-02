@@ -1,6 +1,6 @@
 title: "level_3_-20_0"
-description: "Des arbres denses et sombres."
-type: "foret"
+description: "Une vaste plaine verdoyante."
+type: "plaine"
 exits:
   n: true
   s: true

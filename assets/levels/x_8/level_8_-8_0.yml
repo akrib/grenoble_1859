@@ -1,6 +1,6 @@
 title: "level_8_-8_0"
-description: "Des arbres denses et sombres."
-type: "foret"
+description: "Un désert aride et brûlant."
+type: "desert"
 exits:
   n: true
   s: true

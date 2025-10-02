@@ -1,6 +1,6 @@
 title: "level_5_0_0"
-description: "Un petit village de pierre et bois."
-type: "ville"
+description: "Un chemin battu serpentant entre les régions."
+type: "route"
 exits:
   n: true
   s: true

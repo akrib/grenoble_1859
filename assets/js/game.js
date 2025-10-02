@@ -87,17 +87,17 @@ async function loadSurroundingLevels(char) {
 // ----------------------
 // Navigation et déplacements
 // ----------------------
-const directionVectors = {
-  n:  [0, 1, 0],
-  ne: [1, 1, 0],
-  e:  [1, 0, 0],
-  se: [1,-1, 0],
-  s:  [0,-1, 0],
-  sw: [-1,-1,0],
-  w:  [-1,0, 0],
-  nw: [-1,1, 0],
-  up: [0,0, 1],
-  down:[0,0,-1]
+const directions = {
+  n:  [0, 1, 0, "Nord"],
+  ne: [1, 1, 0, "Nord-Est"],
+  e:  [1, 0, 0, "Est"],
+  se: [1,-1, 0, "Sud-Est"],
+  s:  [0,-1, 0, "Sud"],
+  sw: [-1,-1,0, "Sud-Ouest"],
+  w:  [-1,0, 0, "Ouest"],
+  nw: [-1,1, 0, "Nord-Ouest"],
+  up: [0,0, 1, "Monter"],
+  down:[0,0,-1,"Descendre"]
 };
 
 async function renderLevel(char) {
@@ -105,7 +105,6 @@ async function renderLevel(char) {
   const levelId = `level_${char.position.x}_${char.position.y}_${char.position.z}`;
   const level = levels[levelId];
 
-  // Affichage titre et description
   const titleEl = document.getElementById("level-title");
   const descEl  = document.getElementById("level-description");
   if (level) {
@@ -116,22 +115,31 @@ async function renderLevel(char) {
     descEl.textContent = "Il n'y a rien ici...";
   }
 
-  // Met à jour navigation
-  const directions = ["n","ne","e","se","s","sw","w","nw","up","down"];
-  directions.forEach(dir => {
+  const dirs = ["n","ne","e","se","s","sw","w","nw","up","down"];
+  dirs.forEach(dir => {
     const btn = document.querySelector(`.nav-btn[data-dir="${dir}"]`);
     if (!btn) return;
 
     if (level && level.exits && level.exits[dir]) {
       btn.disabled = false;
       btn.onclick = async () => {
-        const [dx, dy, dz] = directionVectors[dir];
-        char.position.x += dx;
-        char.position.y += dy;
-        char.position.z += dz;
+        switch(dir) {
+          case "n": char.position.y += 1; break;
+          case "ne": char.position.y += 1; char.position.x += 1; break;
+          case "e": char.position.x += 1; break;
+          case "se": char.position.y -= 1; char.position.x += 1; break;
+          case "s": char.position.y -= 1; break;
+          case "sw": char.position.y -= 1; char.position.x -= 1; break;
+          case "w": char.position.x -= 1; break;
+          case "nw": char.position.y += 1; char.position.x -= 1; break;
+          case "up": char.position.z += 1; break;
+          case "down": char.position.z -= 1; break;
+        }
         saveCharacter(char);
         updateCharacterSheet(char);
-        await renderLevel(char); // drawMinimap sera appelé à la fin
+        await renderLevel(char);
+        const newLevels = await loadSurroundingLevels(char);
+        await drawMinimap(char, newLevels);
       };
     } else {
       btn.disabled = true;
@@ -139,18 +147,17 @@ async function renderLevel(char) {
     }
   });
 
-  // Met à jour la minimap après que tous les niveaux soient chargés
   await drawMinimap(char, levels);
 }
 
 // ----------------------
-// Mini-map
+// Mini-map améliorée
 // ----------------------
 async function drawMinimap(player, surroundingLevels) {
   const canvas = document.getElementById("map-canvas");
   const ctx = canvas.getContext("2d");
   const size = 20;
-  const halfMap = 1; // rayon de 1 → 3x3
+  const halfMap = 1;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -159,20 +166,38 @@ async function drawMinimap(player, surroundingLevels) {
       const levelX = player.position.x + dx;
       const levelY = player.position.y + dy;
       const levelZ = player.position.z;
+
       const levelId = `level_${levelX}_${levelY}_${levelZ}`;
       const level = surroundingLevels[levelId];
 
       const px = (dx + halfMap) * size;
-      const py = (halfMap - dy) * size; // inversion Y
+      const py = (halfMap - dy) * size;
 
-      // Couleur de fond selon type
       if (level && level.type) {
         switch(level.type) {
-          case "ville": ctx.fillStyle = "grey"; break;
-          case "foret": ctx.fillStyle = "green"; break;
-          case "eau":   ctx.fillStyle = "blue"; break;
+          case "ville":
+            ctx.fillStyle = "grey";
+            break;
+          case "foret":
+            ctx.fillStyle = "green";
+            break;
+          case "eau":
+            ctx.fillStyle = "blue";
+            break;
           case "plaine":
-          default:      ctx.fillStyle = "#a0d080";
+            ctx.fillStyle = "#a0d080";
+            break;
+          case "montagne":
+            ctx.fillStyle = "#888"; // gris foncé
+            break;
+          case "desert":
+            ctx.fillStyle = "#edc9af"; // sable clair
+            break;
+          case "route":
+            ctx.fillStyle = "#b5651d"; // marron route
+            break;
+          default:
+            ctx.fillStyle = "#333";
         }
       } else {
         ctx.fillStyle = "#333";
@@ -182,7 +207,6 @@ async function drawMinimap(player, surroundingLevels) {
       ctx.strokeStyle = "#000";
       ctx.strokeRect(px, py, size, size);
 
-      // Joueur
       if (dx === 0 && dy === 0) {
         ctx.fillStyle = "yellow";
         ctx.fillRect(px+4, py+4, size-8, size-8);
