@@ -120,28 +120,37 @@ async function renderLevel(char) {
     descEl.textContent = "Il n'y a rien ici...";
   }
 
-  // Navigation
-  const nav = document.getElementById("navigation");
-  nav.innerHTML = "";
-  if (level && level.exits) {
-    for (let dir in directions) {
-      if (level.exits[dir]) {
-        const [dx, dy, dz, label] = directions[dir];
-        const btn = document.createElement("button");
-        btn.textContent = label;
-        btn.onclick = async () => {
-          char.position.x += dx;
-          char.position.y += dy;
-          char.position.z += dz;
-          saveCharacter(char);
-          updateCharacterSheet(char);
-          await renderLevel(char);
-          await drawMinimap(char);
-        };
-        nav.appendChild(btn);
-      }
+  // Navigation : activer/désactiver les boutons existants
+  const directions = ["n","ne","e","se","s","sw","w","nw","up","down"];
+  directions.forEach(dir => {
+    const btn = document.querySelector(`.nav-btn[data-dir="${dir}"]`);
+    if (!btn) return;
+
+    if (level && level.exits && level.exits[dir]) {
+      btn.disabled = false;
+      btn.onclick = async () => {
+        switch(dir) {
+          case "n": char.position.y -= 1; break;
+          case "ne": char.position.y -= 1; char.position.x += 1; break;
+          case "e": char.position.x += 1; break;
+          case "se": char.position.y += 1; char.position.x += 1; break;
+          case "s": char.position.y += 1; break;
+          case "sw": char.position.y += 1; char.position.x -= 1; break;
+          case "w": char.position.x -= 1; break;
+          case "nw": char.position.y -= 1; char.position.x -= 1; break;
+          case "up": char.position.z += 1; break;
+          case "down": char.position.z -= 1; break;
+        }
+        saveCharacter(char);
+        updateCharacterSheet(char);
+        await renderLevel(char);
+        await drawMinimap(char);
+      };
+    } else {
+      btn.disabled = true;
+      btn.onclick = null;
     }
-  }
+  });
 }
 
 // ----------------------
