@@ -42,15 +42,12 @@ function updateCharacterSheet(char) {
 // Gestion des niveaux
 // ----------------------
 function getLevelDir(x) {
-  // URL absolue basée sur l'origine du site
-  //return window.location.origin + "/grenoble_1859/assets/levels/x_" + x;
   return `${BASE_URL}/assets/levels/x_${x}`;
-
 }
 
 async function loadYAMLLevel(levelId, x) {
   const dir = getLevelDir(x);
-  const url = `${dir}/${levelId}.yml`; // absolu par rapport à la racine
+  const url = `${dir}/${levelId}.yml`;
   try {
     const res = await fetch(url);
     if (!res.ok) {
@@ -64,7 +61,6 @@ async function loadYAMLLevel(levelId, x) {
     return null;
   }
 }
-
 
 async function loadSurroundingLevels(char) {
   const x0 = char.position.x;
@@ -91,17 +87,10 @@ async function loadSurroundingLevels(char) {
 // ----------------------
 // Navigation et déplacements
 // ----------------------
-const directions = {
-  n:  [0, 1, 0, "Nord"],
-  ne: [1, 1, 0, "Nord-Est"],
-  e:  [1, 0, 0, "Est"],
-  se: [1,-1, 0, "Sud-Est"],
-  s:  [0,-1, 0, "Sud"],
-  sw: [-1,-1,0, "Sud-Ouest"],
-  w:  [-1,0, 0, "Ouest"],
-  nw: [-1,1, 0, "Nord-Ouest"],
-  up: [0,0, 1, "Monter"],
-  down:[0,0,-1,"Descendre"]
+const directionsMap = {
+  n:  [0,-1, 0], ne: [1,-1,0], e: [1,0,0], se: [1,1,0],
+  s:  [0,1,0], sw: [-1,1,0], w: [-1,0,0], nw: [-1,-1,0],
+  up: [0,0,1], down:[0,0,-1]
 };
 
 async function renderLevel(char) {
@@ -129,28 +118,23 @@ async function renderLevel(char) {
     if (level && level.exits && level.exits[dir]) {
       btn.disabled = false;
       btn.onclick = async () => {
-        switch(dir) {
-          case "n": char.position.y -= 1; break;
-          case "ne": char.position.y -= 1; char.position.x += 1; break;
-          case "e": char.position.x += 1; break;
-          case "se": char.position.y += 1; char.position.x += 1; break;
-          case "s": char.position.y += 1; break;
-          case "sw": char.position.y += 1; char.position.x -= 1; break;
-          case "w": char.position.x -= 1; break;
-          case "nw": char.position.y -= 1; char.position.x -= 1; break;
-          case "up": char.position.z += 1; break;
-          case "down": char.position.z -= 1; break;
-        }
+        const [dx, dy, dz] = directionsMap[dir];
+        char.position.x += dx;
+        char.position.y += dy;
+        char.position.z += dz;
         saveCharacter(char);
         updateCharacterSheet(char);
         await renderLevel(char);
-        await drawMinimap(char);
+        await drawMinimap(char, levels);
       };
     } else {
       btn.disabled = true;
       btn.onclick = null;
     }
   });
+
+  // Dessin de la mini-map
+  await drawMinimap(char, levels);
 }
 
 // ----------------------
@@ -159,43 +143,32 @@ async function renderLevel(char) {
 async function drawMinimap(player, surroundingLevels) {
   const canvas = document.getElementById("map-canvas");
   const ctx = canvas.getContext("2d");
-  const size = 20; // taille d'une case
-  const halfMap = 1; // pour une mini-map 3x3 centrée sur le joueur
+  const size = 20;
+  const halfMap = 1;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Boucle sur les 3x3 cases autour du joueur
   for (let dy = -1; dy <= 1; dy++) {
     for (let dx = -1; dx <= 1; dx++) {
-      const levelX = player.position.x + dx;
-      const levelY = player.position.y + dy;
-      const levelZ = player.position.z;
-
-      const levelId = `level_${levelX}_${levelY}_${levelZ}`;
+      const x = player.position.x + dx;
+      const y = player.position.y + dy;
+      const z = player.position.z;
+      const levelId = `level_${x}_${y}_${z}`;
       const level = surroundingLevels[levelId];
 
       const px = (dx + halfMap) * size;
-      const py = (halfMap - dy) * size; // <- inversion Y
+      const py = (halfMap - dy) * size; // inversion Y
 
-      // Fond selon biome
+      // Biome
       if (level && level.type) {
         switch(level.type) {
-          case "ville":
-            ctx.fillStyle = "grey";
-            break;
-          case "foret":
-            ctx.fillStyle = "green";
-            break;
-          case "eau":
-            ctx.fillStyle = "blue";
-            break;
-          case "plaine":
-          default:
-            ctx.fillStyle = "#a0d080";
+          case "ville": ctx.fillStyle = "grey"; break;
+          case "foret": ctx.fillStyle = "green"; break;
+          case "eau": ctx.fillStyle = "blue"; break;
+          case "plaine": ctx.fillStyle = "#a0d080"; break;
+          default: ctx.fillStyle = "#a0d080";
         }
-      } else {
-        ctx.fillStyle = "#333"; // level inconnu
-      }
+      } else ctx.fillStyle = "#333";
 
       ctx.fillRect(px, py, size, size);
       ctx.strokeStyle = "#000";
@@ -207,23 +180,21 @@ async function drawMinimap(player, surroundingLevels) {
         ctx.fillRect(px+4, py+4, size-8, size-8);
 
         if (level && level.exits) {
-          // flèche up
           if (level.exits.up) {
             ctx.fillStyle = "white";
             ctx.beginPath();
-            ctx.moveTo(px + size/2, py + 3);
-            ctx.lineTo(px + size/2 - 3, py + 10);
-            ctx.lineTo(px + size/2 + 3, py + 10);
+            ctx.moveTo(px+size/2, py+3);
+            ctx.lineTo(px+size/2-3, py+10);
+            ctx.lineTo(px+size/2+3, py+10);
             ctx.closePath();
             ctx.fill();
           }
-          // flèche down
           if (level.exits.down) {
             ctx.fillStyle = "white";
             ctx.beginPath();
-            ctx.moveTo(px + size/2, py + size - 3);
-            ctx.lineTo(px + size/2 - 3, py + size - 10);
-            ctx.lineTo(px + size/2 + 3, py + size - 10);
+            ctx.moveTo(px+size/2, py+size-3);
+            ctx.lineTo(px+size/2-3, py+size-10);
+            ctx.lineTo(px+size/2+3, py+size-10);
             ctx.closePath();
             ctx.fill();
           }
@@ -232,6 +203,7 @@ async function drawMinimap(player, surroundingLevels) {
     }
   }
 }
+
 // ----------------------
 // Initialisation
 // ----------------------
@@ -239,5 +211,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   const char = loadCharacter();
   updateCharacterSheet(char);
   await renderLevel(char);
-  await drawMinimap(char);
 });
