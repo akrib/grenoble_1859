@@ -1,209 +1,65 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Générateur de Rat Pixel Art</title>
-<style>
-body {
-  font-family: sans-serif;
-  background: #222;
-  color: white;
-  text-align: center;
-  padding: 2rem;
-}
-canvas {
-  border: 2px solid #ccc;
-  image-rendering: pixelated;
-}
-.controls {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-select, input[type=checkbox] {
-  margin-top: 0.5rem;
-}
-.panel {
-  background: white;
-  color: black;
-  padding: 1rem;
-  border-radius: 8px;
-  display: inline-block;
-  margin-top: 1rem;
-  text-align: left;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Rat Pixelart 64x64</title>
+  <style>
+    body { background: #222; color: #eee; text-align: center; font-family: monospace; }
+    canvas { image-rendering: pixelated; border: 1px solid #444; margin-top: 20px; }
+    button { margin: 10px; padding: 8px; font-size: 16px; }
+  </style>
 </head>
 <body>
+  <h1>🐀 Générateur de Rat Pixelart</h1>
+  <button onclick="generateRat()">Générer</button>
+  <canvas id="ratCanvas" width="64" height="64"></canvas>
 
-<h1>🐀 Générateur de Rat Pixel Art</h1>
-<canvas id="ratCanvas" width="256" height="256"></canvas>
+  <script>
+    function generateRat() {
+      const canvas = document.getElementById('ratCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 64, 64);
 
-<div class="controls">
-  <button id="newRatBtn">Nouveau Rat</button>
-  <button id="downloadBtn">Télécharger</button>
-  <button id="togglePanelBtn">Contrôles</button>
-</div>
+      // Couleurs
+      const bodyColor = `rgb(${100 + Math.random()*50}, ${100 + Math.random()*50}, ${100 + Math.random()*50})`;
+      const earColor = "#cc9999";
+      const eyeColor = "#000";
+      const tailColor = "#cc8888";
 
-<div id="controlPanel" class="panel" style="display:none;">
-  <label>Taille:
-    <select id="sizeSelect">
-      <option value="small">Petit</option>
-      <option value="medium" selected>Moyen</option>
-      <option value="large">Grand</option>
-    </select>
-  </label><br>
+      // Corps
+      ctx.fillStyle = bodyColor;
+      ctx.fillRect(20, 28, 24, 16); // corps
 
-  <label>Pose:
-    <select id="poseSelect">
-      <option value="standing" selected>Debout</option>
-      <option value="sitting">Assis</option>
-      <option value="alert">Alerte</option>
-      <option value="sneaking">Furtif</option>
-    </select>
-  </label><br>
+      // Tête
+      ctx.fillRect(42, 24, 12, 12); // tête
 
-  <label>Accessoires:
-    <input type="checkbox" id="accessoriesCheckbox" checked>
-  </label>
-</div>
+      // Oreilles
+      ctx.fillStyle = earColor;
+      ctx.fillRect(43, 22, 4, 4); // oreille gauche
+      ctx.fillRect(49, 22, 4, 4); // oreille droite
 
-<script>
-const canvas = document.getElementById('ratCanvas');
-const ctx = canvas.getContext('2d');
-ctx.imageSmoothingEnabled = false; // pixel art net
-let seed = Math.random();
+      // Yeux
+      ctx.fillStyle = eyeColor;
+      ctx.fillRect(45, 27, 2, 2);
+      ctx.fillRect(51, 27, 2, 2);
 
-const config = {
-  size: 'medium',
-  pose: 'standing',
-  accessories: true
-};
+      // Nez
+      ctx.fillStyle = "#ff6666";
+      ctx.fillRect(48, 34, 2, 2);
 
-const PIXEL = 32; // taille de la grille pixel
-
-function seededRandom(seed) {
-  const x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
-
-// palettes simples
-const bodyColors = [
-  [120,120,120],[101,67,33],[40,40,40],[220,220,220],[194,178,128],[150,75,0]
-];
-const eyeColors = [[0,0,0],[255,100,100],[139,69,19]];
-
-// --- génération d'un rat pixel art ---
-function drawRat() {
-  const width = PIXEL;
-  const height = PIXEL;
-  const scale = canvas.width / PIXEL; // pour agrandir
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  let currentSeed = seed;
-  const nextRand = () => { currentSeed+=1; return seededRandom(currentSeed); }
-
-  const bodyColor = bodyColors[Math.floor(nextRand()*bodyColors.length)];
-  const eyeColor = eyeColors[Math.floor(nextRand()*eyeColors.length)];
-
-  // "image" du rat en pixels (32x32)
-  const pixels = Array.from({length:PIXEL},()=>Array(PIXEL).fill([0,0,0,0]));
-
-  const centerX = Math.floor(PIXEL/2);
-  const centerY = Math.floor(PIXEL*0.6);
-  const sizeMult = config.size==='small'?0.6:config.size==='large'?1.2:1;
-
-  const bodyW = Math.floor(6*sizeMult);
-  const bodyH = Math.floor(4*sizeMult);
-
-  // corps (rectangle simple)
-  for(let y=-bodyH; y<=bodyH; y++){
-    for(let x=-bodyW; x<=bodyW; x++){
-      let px = centerX+x;
-      let py = centerY+y;
-      if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
-        pixels[py][px] = [...bodyColor,255];
+      // Queue
+      ctx.fillStyle = tailColor;
+      for (let i = 0; i < 6; i++) {
+        ctx.fillRect(18 - i, 36 + (i % 2), 1, 1);
       }
+
+      // Pattes
+      ctx.fillStyle = "#333";
+      ctx.fillRect(24, 44, 2, 2);
+      ctx.fillRect(38, 44, 2, 2);
     }
-  }
 
-  // tête (rectangle ou carré)
-  const headSize = Math.floor(3*sizeMult);
-  for(let y=-headSize; y<=headSize; y++){
-    for(let x=-headSize; x<=headSize; x++){
-      let px = centerX+bodyW+x;
-      let py = centerY-1+y;
-      if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
-        pixels[py][px] = [...bodyColor,255];
-      }
-    }
-  }
-
-  // yeux
-  for(let i=-1;i<=1;i+=2){
-    let px = centerX+bodyW+i*2;
-    let py = centerY-1;
-    if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
-      pixels[py][px] = [...eyeColor,255];
-    }
-  }
-
-  // queue
-  for(let i=0;i<5;i++){
-    let px = centerX-bodyW-1-i;
-    let py = centerY;
-    if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
-      pixels[py][px] = [...bodyColor,255];
-    }
-  }
-
-  // oreilles
-  pixels[centerY-headSize-1][centerX+bodyW-1] = [...bodyColor,255];
-  pixels[centerY-headSize-1][centerX+bodyW+1] = [...bodyColor,255];
-
-  // accessoires simples
-  if(config.accessories && nextRand()>0.5){
-    let px = centerX;
-    let py = centerY+bodyH-1;
-    pixels[py][px] = [255,0,0,255]; // collier rouge
-  }
-
-  // dessiner les pixels sur le canvas
-  for(let y=0;y<PIXEL;y++){
-    for(let x=0;x<PIXEL;x++){
-      const p = pixels[y][x];
-      if(p[3]===0) continue;
-      ctx.fillStyle = `rgba(${p[0]},${p[1]},${p[2]},${p[3]/255})`;
-      ctx.fillRect(x*scale,y*scale,scale,scale);
-    }
-  }
-}
-
-// --- actions ---
-function regenerateRat() { seed=Math.random(); drawRat(); }
-function downloadRat() {
-  const link = document.createElement('a');
-  link.download=`rat_${Date.now()}.png`;
-  link.href=canvas.toDataURL();
-  link.click();
-}
-
-// --- événements ---
-document.getElementById('newRatBtn').addEventListener('click', regenerateRat);
-document.getElementById('downloadBtn').addEventListener('click', downloadRat);
-document.getElementById('togglePanelBtn').addEventListener('click', ()=>{
-  const panel = document.getElementById('controlPanel');
-  panel.style.display = panel.style.display==='none'?'block':'none';
-});
-document.getElementById('sizeSelect').addEventListener('change', e=>{ config.size=e.target.value; drawRat(); });
-document.getElementById('poseSelect').addEventListener('change', e=>{ config.pose=e.target.value; drawRat(); });
-document.getElementById('accessoriesCheckbox').addEventListener('change', e=>{ config.accessories=e.target.checked; drawRat(); });
-
-// premier dessin
-drawRat();
-</script>
-
+    generateRat(); // Génère au chargement
+  </script>
 </body>
 </html>
