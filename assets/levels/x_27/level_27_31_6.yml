@@ -1,0 +1,15 @@
+title: "level_27_31_6"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "centre_ville"
+coordinates:
+  x: 27
+  y: 31
+  z: 6
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,8 +1,15 @@
 title: "level_34_0_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une vieille usine désaffectée, dangereuse mais riche"
+type: "usine"
+district: "industriel"
+coordinates:
+  x: 34
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

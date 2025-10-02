@@ -1,0 +1,15 @@
+title: "level_3_37_2"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 3
+  y: 37
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

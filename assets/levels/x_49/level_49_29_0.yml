@@ -1,8 +1,15 @@
 title: "level_49_29_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 49
+  y: 29
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: true
+  down: false

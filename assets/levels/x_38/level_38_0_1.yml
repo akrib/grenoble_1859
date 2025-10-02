@@ -1,0 +1,15 @@
+title: "level_38_0_1"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "banlieue"
+coordinates:
+  x: 38
+  y: 0
+  z: 1
+exits:
+  n: true
+  s: false
+  e: true
+  w: true
+  up: false
+  down: true

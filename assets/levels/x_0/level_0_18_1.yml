@@ -1,0 +1,15 @@
+title: "level_0_18_1"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 0
+  y: 18
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: false
+  up: true
+  down: true

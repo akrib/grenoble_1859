@@ -1,8 +1,0 @@
-title: "level_15_-19_0"
-description: "Un désert aride et brûlant."
-type: "desert"
-exits:
-  n: true
-  s: true
-  e: true
-  w: true

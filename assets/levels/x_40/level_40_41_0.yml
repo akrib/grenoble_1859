@@ -1,8 +1,15 @@
 title: "level_40_41_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "industriel"
+coordinates:
+  x: 40
+  y: 41
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

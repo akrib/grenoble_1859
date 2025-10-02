@@ -1,8 +1,15 @@
 title: "level_44_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "banlieue"
+coordinates:
+  x: 44
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: true
+  down: false

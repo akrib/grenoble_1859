@@ -1,0 +1,15 @@
+title: "level_21_27_5"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "centre_ville"
+coordinates:
+  x: 21
+  y: 27
+  z: 5
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

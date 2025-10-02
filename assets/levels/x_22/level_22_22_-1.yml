@@ -1,0 +1,15 @@
+title: "level_22_22_-1"
+description: "Un nid de rats, territoire à défendre ou conquérir"
+type: "nid_rats"
+district: "centre_ville"
+coordinates:
+  x: 22
+  y: 22
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

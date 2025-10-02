@@ -1,0 +1,15 @@
+title: "level_6_34_1"
+description: "Une vieille usine désaffectée, dangereuse mais riche"
+type: "usine"
+district: "industriel"
+coordinates:
+  x: 6
+  y: 34
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

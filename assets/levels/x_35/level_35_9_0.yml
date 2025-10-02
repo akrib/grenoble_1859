@@ -1,8 +1,15 @@
 title: "level_35_9_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une rue résidentielle calme avec quelques passants"
+type: "rue_secondaire"
+district: "residentiel"
+coordinates:
+  x: 35
+  y: 9
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

@@ -1,0 +1,15 @@
+title: "level_25_25_4"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "centre_ville"
+coordinates:
+  x: 25
+  y: 25
+  z: 4
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

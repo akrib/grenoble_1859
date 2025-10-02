@@ -1,0 +1,15 @@
+title: "level_45_7_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "industriel"
+coordinates:
+  x: 45
+  y: 7
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

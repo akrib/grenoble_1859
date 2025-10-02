@@ -1,8 +1,15 @@
 title: "level_49_24_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une plaque d'égout menant au réseau souterrain"
+type: "entree_egout"
+district: "industriel"
+coordinates:
+  x: 49
+  y: 24
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

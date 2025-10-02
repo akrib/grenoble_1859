@@ -1,0 +1,15 @@
+title: "level_21_49_2"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 21
+  y: 49
+  z: 2
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,0 +1,15 @@
+title: "level_49_42_1"
+description: "Un petit jardin public avec des bancs"
+type: "jardin_public"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 42
+  z: 1
+exits:
+  n: true
+  s: true
+  e: false
+  w: true
+  up: false
+  down: true

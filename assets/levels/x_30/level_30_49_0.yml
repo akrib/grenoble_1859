@@ -1,8 +1,15 @@
 title: "level_30_49_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 30
+  y: 49
+  z: 0
 exits:
-  n: true
+  n: false
   s: true
   e: true
   w: true
+  up: false
+  down: false

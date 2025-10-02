@@ -1,0 +1,15 @@
+title: "level_27_26_1"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "centre_ville"
+coordinates:
+  x: 27
+  y: 26
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

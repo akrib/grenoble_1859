@@ -1,0 +1,15 @@
+title: "level_31_10_3"
+description: "Un restaurant, paradis des rats affamés"
+type: "restaurant"
+district: "residentiel"
+coordinates:
+  x: 31
+  y: 10
+  z: 3
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

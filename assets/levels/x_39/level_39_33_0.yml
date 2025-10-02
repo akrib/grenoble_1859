@@ -1,8 +1,15 @@
 title: "level_39_33_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "residentiel"
+coordinates:
+  x: 39
+  y: 33
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

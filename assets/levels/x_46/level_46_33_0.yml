@@ -1,8 +1,15 @@
 title: "level_46_33_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "industriel"
+coordinates:
+  x: 46
+  y: 33
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

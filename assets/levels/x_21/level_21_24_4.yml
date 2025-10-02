@@ -1,0 +1,15 @@
+title: "level_21_24_4"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "centre_ville"
+coordinates:
+  x: 21
+  y: 24
+  z: 4
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

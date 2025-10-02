@@ -1,0 +1,15 @@
+title: "level_17_27_4"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "residentiel"
+coordinates:
+  x: 17
+  y: 27
+  z: 4
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

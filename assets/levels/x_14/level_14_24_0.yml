@@ -1,8 +1,15 @@
 title: "level_14_24_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un restaurant, paradis des rats affamés"
+type: "restaurant"
+district: "residentiel"
+coordinates:
+  x: 14
+  y: 24
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

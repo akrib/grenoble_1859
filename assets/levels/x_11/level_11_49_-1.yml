@@ -1,0 +1,15 @@
+title: "level_11_49_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "industriel"
+coordinates:
+  x: 11
+  y: 49
+  z: -1
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

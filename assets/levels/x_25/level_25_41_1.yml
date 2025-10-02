@@ -1,0 +1,15 @@
+title: "level_25_41_1"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "residentiel"
+coordinates:
+  x: 25
+  y: 41
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,0 +1,15 @@
+title: "level_39_21_3"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "residentiel"
+coordinates:
+  x: 39
+  y: 21
+  z: 3
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,0 +1,15 @@
+title: "level_36_39_2"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "residentiel"
+coordinates:
+  x: 36
+  y: 39
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

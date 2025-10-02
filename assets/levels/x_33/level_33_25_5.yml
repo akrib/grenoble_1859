@@ -1,0 +1,15 @@
+title: "level_33_25_5"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "centre_ville"
+coordinates:
+  x: 33
+  y: 25
+  z: 5
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

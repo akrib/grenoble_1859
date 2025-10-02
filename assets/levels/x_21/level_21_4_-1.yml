@@ -1,0 +1,15 @@
+title: "level_21_4_-1"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "industriel"
+coordinates:
+  x: 21
+  y: 4
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

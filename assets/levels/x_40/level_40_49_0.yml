@@ -1,8 +1,15 @@
 title: "level_40_49_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une large avenue bruyante, dangereuse à traverser"
+type: "rue_principale"
+district: "banlieue"
+coordinates:
+  x: 40
+  y: 49
+  z: 0
 exits:
-  n: true
+  n: false
   s: true
   e: true
   w: true
+  up: false
+  down: false

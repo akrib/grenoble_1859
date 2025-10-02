@@ -1,0 +1,15 @@
+title: "level_8_2_1"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "banlieue"
+coordinates:
+  x: 8
+  y: 2
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

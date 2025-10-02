@@ -1,0 +1,15 @@
+title: "level_12_37_-2"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "residentiel"
+coordinates:
+  x: 12
+  y: 37
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_49_17_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une large avenue bruyante, dangereuse à traverser"
+type: "rue_principale"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 17
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

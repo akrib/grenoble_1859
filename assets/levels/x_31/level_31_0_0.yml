@@ -1,8 +1,15 @@
 title: "level_31_0_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "industriel"
+coordinates:
+  x: 31
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

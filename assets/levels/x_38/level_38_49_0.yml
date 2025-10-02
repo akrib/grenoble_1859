@@ -1,8 +1,15 @@
 title: "level_38_49_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une ruelle sombre entre deux bâtiments, territoire de rats"
+type: "ruelle"
+district: "banlieue"
+coordinates:
+  x: 38
+  y: 49
+  z: 0
 exits:
-  n: true
+  n: false
   s: true
   e: true
   w: true
+  up: false
+  down: false

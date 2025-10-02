@@ -1,0 +1,15 @@
+title: "level_35_39_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "residentiel"
+coordinates:
+  x: 35
+  y: 39
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

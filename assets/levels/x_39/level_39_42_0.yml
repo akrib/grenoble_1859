@@ -1,8 +1,15 @@
 title: "level_39_42_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 39
+  y: 42
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

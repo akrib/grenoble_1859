@@ -1,8 +1,15 @@
 title: "level_14_49_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "industriel"
+coordinates:
+  x: 14
+  y: 49
+  z: 0
 exits:
-  n: true
+  n: false
   s: true
   e: true
   w: true
+  up: false
+  down: false

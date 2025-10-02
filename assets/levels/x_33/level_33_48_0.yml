@@ -1,8 +1,15 @@
 title: "level_33_48_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une vieille usine désaffectée, dangereuse mais riche"
+type: "usine"
+district: "industriel"
+coordinates:
+  x: 33
+  y: 48
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

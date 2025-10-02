@@ -1,0 +1,15 @@
+title: "level_38_40_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "industriel"
+coordinates:
+  x: 38
+  y: 40
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

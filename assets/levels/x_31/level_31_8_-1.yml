@@ -1,0 +1,15 @@
+title: "level_31_8_-1"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "residentiel"
+coordinates:
+  x: 31
+  y: 8
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

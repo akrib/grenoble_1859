@@ -1,8 +1,15 @@
 title: "level_27_9_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "residentiel"
+coordinates:
+  x: 27
+  y: 9
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

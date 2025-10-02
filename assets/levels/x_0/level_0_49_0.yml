@@ -1,8 +1,15 @@
 title: "level_0_49_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "banlieue"
+coordinates:
+  x: 0
+  y: 49
+  z: 0
 exits:
-  n: true
+  n: false
   s: true
   e: true
-  w: true
+  w: false
+  up: false
+  down: false

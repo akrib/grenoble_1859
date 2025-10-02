@@ -1,0 +1,15 @@
+title: "level_25_5_-2"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "industriel"
+coordinates:
+  x: 25
+  y: 5
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

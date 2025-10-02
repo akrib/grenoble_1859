@@ -1,8 +1,15 @@
 title: "level_2_48_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Une ruelle sombre entre deux bâtiments, territoire de rats"
+type: "ruelle"
+district: "banlieue"
+coordinates:
+  x: 2
+  y: 48
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

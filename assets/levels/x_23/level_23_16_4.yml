@@ -1,0 +1,15 @@
+title: "level_23_16_4"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "residentiel"
+coordinates:
+  x: 23
+  y: 16
+  z: 4
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

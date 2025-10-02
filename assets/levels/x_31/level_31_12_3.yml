@@ -1,0 +1,15 @@
+title: "level_31_12_3"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "residentiel"
+coordinates:
+  x: 31
+  y: 12
+  z: 3
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

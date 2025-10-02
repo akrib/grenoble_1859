@@ -1,8 +1,15 @@
 title: "level_24_27_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un lieu indéfini"
+type: "terrain_vague"
+district: "centre_ville"
+coordinates:
+  x: 24
+  y: 27
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

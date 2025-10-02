@@ -1,0 +1,15 @@
+title: "level_4_32_1"
+description: "Une vieille usine désaffectée, dangereuse mais riche"
+type: "usine"
+district: "industriel"
+coordinates:
+  x: 4
+  y: 32
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

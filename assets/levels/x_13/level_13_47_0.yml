@@ -1,8 +1,15 @@
 title: "level_13_47_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 13
+  y: 47
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

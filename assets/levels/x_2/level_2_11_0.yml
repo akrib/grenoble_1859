@@ -1,8 +1,15 @@
 title: "level_2_11_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 2
+  y: 11
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

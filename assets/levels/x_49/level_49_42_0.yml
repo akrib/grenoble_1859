@@ -1,8 +1,15 @@
 title: "level_49_42_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 42
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

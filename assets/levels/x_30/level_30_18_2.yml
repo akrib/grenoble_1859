@@ -1,0 +1,15 @@
+title: "level_30_18_2"
+description: "Un supermarché, réserve infinie mais très surveillé"
+type: "supermarche"
+district: "centre_ville"
+coordinates:
+  x: 30
+  y: 18
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

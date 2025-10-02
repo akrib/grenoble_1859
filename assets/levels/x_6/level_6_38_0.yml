@@ -1,8 +1,15 @@
 title: "level_6_38_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 6
+  y: 38
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

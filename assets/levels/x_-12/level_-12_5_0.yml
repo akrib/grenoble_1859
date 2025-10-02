@@ -1,8 +1,0 @@
-title: "level_-12_5_0"
-description: "Un relief escarpé et difficile d'accès."
-type: "montagne"
-exits:
-  n: true
-  s: true
-  e: true
-  w: true

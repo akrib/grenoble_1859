@@ -1,8 +1,15 @@
 title: "level_3_36_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 3
+  y: 36
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

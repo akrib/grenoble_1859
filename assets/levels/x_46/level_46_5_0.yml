@@ -1,8 +1,15 @@
 title: "level_46_5_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une large avenue bruyante, dangereuse à traverser"
+type: "rue_principale"
+district: "banlieue"
+coordinates:
+  x: 46
+  y: 5
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

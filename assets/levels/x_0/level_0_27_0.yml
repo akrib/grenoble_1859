@@ -1,8 +1,15 @@
 title: "level_0_27_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "banlieue"
+coordinates:
+  x: 0
+  y: 27
+  z: 0
 exits:
   n: true
   s: true
   e: true
-  w: true
+  w: false
+  up: false
+  down: false

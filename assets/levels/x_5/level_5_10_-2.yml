@@ -1,0 +1,15 @@
+title: "level_5_10_-2"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "industriel"
+coordinates:
+  x: 5
+  y: 10
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

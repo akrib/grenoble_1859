@@ -1,0 +1,15 @@
+title: "level_22_30_3"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "residentiel"
+coordinates:
+  x: 22
+  y: 30
+  z: 3
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

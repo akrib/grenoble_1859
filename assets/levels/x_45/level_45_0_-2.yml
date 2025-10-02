@@ -1,0 +1,15 @@
+title: "level_45_0_-2"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "banlieue"
+coordinates:
+  x: 45
+  y: 0
+  z: -2
+exits:
+  n: true
+  s: false
+  e: true
+  w: true
+  up: false
+  down: false

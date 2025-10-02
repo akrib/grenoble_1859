@@ -1,8 +1,0 @@
-title: "level_-8_-20_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
-exits:
-  n: true
-  s: true
-  e: true
-  w: true

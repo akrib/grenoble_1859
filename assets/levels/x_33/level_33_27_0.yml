@@ -1,8 +1,15 @@
 title: "level_33_27_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "centre_ville"
+coordinates:
+  x: 33
+  y: 27
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

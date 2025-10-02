@@ -1,8 +1,15 @@
 title: "level_9_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Une ruelle sombre entre deux bâtiments, territoire de rats"
+type: "ruelle"
+district: "banlieue"
+coordinates:
+  x: 9
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: true

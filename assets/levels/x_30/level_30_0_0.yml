@@ -1,8 +1,15 @@
 title: "level_30_0_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 30
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

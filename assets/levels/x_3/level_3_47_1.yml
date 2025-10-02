@@ -1,0 +1,15 @@
+title: "level_3_47_1"
+description: "Un petit jardin public avec des bancs"
+type: "jardin_public"
+district: "banlieue"
+coordinates:
+  x: 3
+  y: 47
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

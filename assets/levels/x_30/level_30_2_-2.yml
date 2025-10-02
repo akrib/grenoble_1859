@@ -1,0 +1,15 @@
+title: "level_30_2_-2"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "industriel"
+coordinates:
+  x: 30
+  y: 2
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

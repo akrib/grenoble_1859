@@ -1,8 +1,15 @@
 title: "level_14_3_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 14
+  y: 3
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_0_30_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "banlieue"
+coordinates:
+  x: 0
+  y: 30
+  z: 0
 exits:
   n: true
   s: true
   e: true
-  w: true
+  w: false
+  up: false
+  down: false

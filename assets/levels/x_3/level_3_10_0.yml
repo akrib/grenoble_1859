@@ -1,8 +1,15 @@
 title: "level_3_10_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 3
+  y: 10
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

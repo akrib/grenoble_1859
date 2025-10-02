@@ -1,0 +1,15 @@
+title: "level_41_49_-2"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "banlieue"
+coordinates:
+  x: 41
+  y: 49
+  z: -2
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: true
+  down: false

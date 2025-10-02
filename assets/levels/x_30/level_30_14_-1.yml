@@ -1,0 +1,15 @@
+title: "level_30_14_-1"
+description: "Un nid de rats, territoire à défendre ou conquérir"
+type: "nid_rats"
+district: "residentiel"
+coordinates:
+  x: 30
+  y: 14
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

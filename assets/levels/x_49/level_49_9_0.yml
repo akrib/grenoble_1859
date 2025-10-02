@@ -1,8 +1,15 @@
 title: "level_49_9_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 9
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_46_34_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une rue résidentielle calme avec quelques passants"
+type: "rue_secondaire"
+district: "industriel"
+coordinates:
+  x: 46
+  y: 34
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

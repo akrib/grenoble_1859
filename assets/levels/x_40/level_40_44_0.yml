@@ -1,8 +1,15 @@
 title: "level_40_44_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une large avenue bruyante, dangereuse à traverser"
+type: "rue_principale"
+district: "industriel"
+coordinates:
+  x: 40
+  y: 44
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

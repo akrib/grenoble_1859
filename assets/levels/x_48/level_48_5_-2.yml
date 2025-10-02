@@ -1,0 +1,15 @@
+title: "level_48_5_-2"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "banlieue"
+coordinates:
+  x: 48
+  y: 5
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

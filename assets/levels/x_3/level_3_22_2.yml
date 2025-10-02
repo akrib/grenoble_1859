@@ -1,0 +1,15 @@
+title: "level_3_22_2"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 3
+  y: 22
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

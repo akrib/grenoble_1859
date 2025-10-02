@@ -1,8 +1,15 @@
 title: "level_15_30_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un square avec une fontaine"
+type: "square"
+district: "residentiel"
+coordinates:
+  x: 15
+  y: 30
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

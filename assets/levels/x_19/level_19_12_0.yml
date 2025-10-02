@@ -1,8 +1,15 @@
 title: "level_19_12_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "residentiel"
+coordinates:
+  x: 19
+  y: 12
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

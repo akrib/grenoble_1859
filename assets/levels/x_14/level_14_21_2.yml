@@ -1,0 +1,15 @@
+title: "level_14_21_2"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "residentiel"
+coordinates:
+  x: 14
+  y: 21
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

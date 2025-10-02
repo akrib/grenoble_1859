@@ -1,0 +1,15 @@
+title: "level_28_33_2"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "residentiel"
+coordinates:
+  x: 28
+  y: 33
+  z: 2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

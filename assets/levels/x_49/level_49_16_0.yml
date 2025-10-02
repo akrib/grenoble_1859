@@ -1,8 +1,15 @@
 title: "level_49_16_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un lieu indéfini"
+type: "carrefour"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 16
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

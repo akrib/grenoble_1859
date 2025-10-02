@@ -1,0 +1,15 @@
+title: "level_28_0_2"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 28
+  y: 0
+  z: 2
+exits:
+  n: true
+  s: false
+  e: true
+  w: true
+  up: false
+  down: true

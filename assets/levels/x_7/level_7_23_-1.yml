@@ -1,0 +1,15 @@
+title: "level_7_23_-1"
+description: "Un nid de rats, territoire à défendre ou conquérir"
+type: "nid_rats"
+district: "industriel"
+coordinates:
+  x: 7
+  y: 23
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

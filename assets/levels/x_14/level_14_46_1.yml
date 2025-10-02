@@ -1,0 +1,15 @@
+title: "level_14_46_1"
+description: "Une gare grouillante de monde et de déchets"
+type: "gare"
+district: "industriel"
+coordinates:
+  x: 14
+  y: 46
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

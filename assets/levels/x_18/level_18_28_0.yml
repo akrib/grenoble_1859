@@ -1,8 +1,15 @@
 title: "level_18_28_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "residentiel"
+coordinates:
+  x: 18
+  y: 28
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

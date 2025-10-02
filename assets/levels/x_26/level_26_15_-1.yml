@@ -1,0 +1,15 @@
+title: "level_26_15_-1"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "residentiel"
+coordinates:
+  x: 26
+  y: 15
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: false

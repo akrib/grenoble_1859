@@ -1,8 +1,15 @@
 title: "level_16_14_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un lieu indéfini"
+type: "carrefour"
+district: "residentiel"
+coordinates:
+  x: 16
+  y: 14
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_35_0_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "industriel"
+coordinates:
+  x: 35
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

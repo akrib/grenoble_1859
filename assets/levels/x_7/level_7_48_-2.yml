@@ -1,0 +1,15 @@
+title: "level_7_48_-2"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "banlieue"
+coordinates:
+  x: 7
+  y: 48
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

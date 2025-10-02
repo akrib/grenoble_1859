@@ -1,8 +1,15 @@
 title: "level_3_42_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Un petit jardin public avec des bancs"
+type: "jardin_public"
+district: "banlieue"
+coordinates:
+  x: 3
+  y: 42
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

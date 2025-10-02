@@ -1,0 +1,15 @@
+title: "level_9_0_-1"
+description: "Un nid de rats, territoire à défendre ou conquérir"
+type: "nid_rats"
+district: "banlieue"
+coordinates:
+  x: 9
+  y: 0
+  z: -1
+exits:
+  n: true
+  s: false
+  e: true
+  w: true
+  up: false
+  down: false

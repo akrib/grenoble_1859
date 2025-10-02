@@ -1,8 +1,15 @@
 title: "level_26_27_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "centre_ville"
+coordinates:
+  x: 26
+  y: 27
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

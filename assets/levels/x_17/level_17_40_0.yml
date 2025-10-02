@@ -1,8 +1,15 @@
 title: "level_17_40_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une ruelle sombre entre deux bâtiments, territoire de rats"
+type: "ruelle"
+district: "residentiel"
+coordinates:
+  x: 17
+  y: 40
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

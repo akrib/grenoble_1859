@@ -1,8 +1,15 @@
 title: "level_48_46_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une impasse tranquille, peu fréquentée"
+type: "impasse"
+district: "banlieue"
+coordinates:
+  x: 48
+  y: 46
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

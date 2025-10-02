@@ -1,8 +1,15 @@
 title: "level_29_36_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une rue résidentielle calme avec quelques passants"
+type: "rue_secondaire"
+district: "residentiel"
+coordinates:
+  x: 29
+  y: 36
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

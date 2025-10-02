@@ -1,8 +1,15 @@
 title: "level_23_44_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "industriel"
+coordinates:
+  x: 23
+  y: 44
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

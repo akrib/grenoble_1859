@@ -1,8 +1,15 @@
 title: "level_17_45_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 17
+  y: 45
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

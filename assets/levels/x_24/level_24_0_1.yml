@@ -1,0 +1,15 @@
+title: "level_24_0_1"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 24
+  y: 0
+  z: 1
+exits:
+  n: true
+  s: false
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,0 +1,15 @@
+title: "level_0_35_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "banlieue"
+coordinates:
+  x: 0
+  y: 35
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: false
+  up: false
+  down: false

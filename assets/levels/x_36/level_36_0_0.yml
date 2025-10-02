@@ -1,8 +1,15 @@
 title: "level_36_0_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "banlieue"
+coordinates:
+  x: 36
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_22_39_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "residentiel"
+coordinates:
+  x: 22
+  y: 39
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

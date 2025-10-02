@@ -1,8 +1,15 @@
 title: "level_4_44_0"
-description: "Une rivière sinueuse traverse le terrain."
-type: "eau"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "banlieue"
+coordinates:
+  x: 4
+  y: 44
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

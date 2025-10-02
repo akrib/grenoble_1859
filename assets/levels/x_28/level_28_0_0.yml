@@ -1,8 +1,15 @@
 title: "level_28_0_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 28
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

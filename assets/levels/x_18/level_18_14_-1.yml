@@ -1,0 +1,15 @@
+title: "level_18_14_-1"
+description: "Un tunnel d'égout humide et sûr"
+type: "egout"
+district: "residentiel"
+coordinates:
+  x: 18
+  y: 14
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

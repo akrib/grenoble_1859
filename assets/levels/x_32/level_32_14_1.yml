@@ -1,0 +1,15 @@
+title: "level_32_14_1"
+description: "Un restaurant, paradis des rats affamés"
+type: "restaurant"
+district: "residentiel"
+coordinates:
+  x: 32
+  y: 14
+  z: 1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

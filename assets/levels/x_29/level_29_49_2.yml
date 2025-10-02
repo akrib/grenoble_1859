@@ -1,0 +1,15 @@
+title: "level_29_49_2"
+description: "Une vieille usine désaffectée, dangereuse mais riche"
+type: "usine"
+district: "industriel"
+coordinates:
+  x: 29
+  y: 49
+  z: 2
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

@@ -1,0 +1,15 @@
+title: "level_18_49_2"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 18
+  y: 49
+  z: 2
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

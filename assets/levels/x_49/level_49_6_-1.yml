@@ -1,0 +1,15 @@
+title: "level_49_6_-1"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 6
+  z: -1
+exits:
+  n: true
+  s: true
+  e: false
+  w: true
+  up: false
+  down: false

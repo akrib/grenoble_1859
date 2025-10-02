@@ -1,8 +1,15 @@
 title: "level_7_4_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une plaque d'égout menant au réseau souterrain"
+type: "entree_egout"
+district: "banlieue"
+coordinates:
+  x: 7
+  y: 4
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

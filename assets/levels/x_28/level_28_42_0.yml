@@ -1,8 +1,15 @@
 title: "level_28_42_0"
-description: "Un relief escarpé et difficile d'accès."
-type: "montagne"
+description: "Un restaurant, paradis des rats affamés"
+type: "restaurant"
+district: "residentiel"
+coordinates:
+  x: 28
+  y: 42
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: true
+  down: false

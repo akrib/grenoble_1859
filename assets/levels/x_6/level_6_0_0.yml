@@ -1,8 +1,15 @@
 title: "level_6_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Une plaque d'égout menant au réseau souterrain"
+type: "entree_egout"
+district: "banlieue"
+coordinates:
+  x: 6
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

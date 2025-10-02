@@ -1,8 +1,15 @@
 title: "level_49_7_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 7
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

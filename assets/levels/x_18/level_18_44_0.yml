@@ -1,8 +1,15 @@
 title: "level_18_44_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "industriel"
+coordinates:
+  x: 18
+  y: 44
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

@@ -1,0 +1,15 @@
+title: "level_19_23_4"
+description: "Une petite boutique avec des restes de nourriture"
+type: "boutique"
+district: "centre_ville"
+coordinates:
+  x: 19
+  y: 23
+  z: 4
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

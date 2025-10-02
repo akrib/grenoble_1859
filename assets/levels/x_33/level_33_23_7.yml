@@ -1,0 +1,15 @@
+title: "level_33_23_7"
+description: "Un supermarché, réserve infinie mais très surveillé"
+type: "supermarche"
+district: "centre_ville"
+coordinates:
+  x: 33
+  y: 23
+  z: 7
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

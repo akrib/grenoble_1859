@@ -1,8 +1,15 @@
 title: "level_13_2_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un amas de poubelles, garde-manger urbain"
+type: "poubelles"
+district: "banlieue"
+coordinates:
+  x: 13
+  y: 2
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

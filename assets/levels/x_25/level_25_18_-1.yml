@@ -1,0 +1,15 @@
+title: "level_25_18_-1"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "centre_ville"
+coordinates:
+  x: 25
+  y: 18
+  z: -1
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: false

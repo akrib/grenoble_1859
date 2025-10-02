@@ -1,8 +1,15 @@
 title: "level_20_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Un lieu indéfini"
+type: "carrefour"
+district: "industriel"
+coordinates:
+  x: 20
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

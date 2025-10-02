@@ -1,0 +1,15 @@
+title: "level_25_23_3"
+description: "Un restaurant, paradis des rats affamés"
+type: "restaurant"
+district: "centre_ville"
+coordinates:
+  x: 25
+  y: 23
+  z: 3
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

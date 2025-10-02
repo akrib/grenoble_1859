@@ -1,8 +1,15 @@
 title: "level_47_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Un immeuble d'habitation avec des poubelles prometteuses"
+type: "immeuble_residentiel"
+district: "banlieue"
+coordinates:
+  x: 47
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

@@ -1,8 +1,15 @@
 title: "level_17_0_0"
-description: "Un chemin battu serpentant entre les régions."
-type: "route"
+description: "Une rue résidentielle calme avec quelques passants"
+type: "rue_secondaire"
+district: "banlieue"
+coordinates:
+  x: 17
+  y: 0
+  z: 0
 exits:
   n: true
-  s: true
+  s: false
   e: true
   w: true
+  up: false
+  down: false

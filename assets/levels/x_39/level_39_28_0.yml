@@ -1,8 +1,15 @@
 title: "level_39_28_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Un lieu indéfini"
+type: "terrain_vague"
+district: "residentiel"
+coordinates:
+  x: 39
+  y: 28
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

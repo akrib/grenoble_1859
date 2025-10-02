@@ -1,0 +1,15 @@
+title: "level_30_28_5"
+description: "Un parking souterrain sombre et labyrinthique"
+type: "parking"
+district: "centre_ville"
+coordinates:
+  x: 30
+  y: 28
+  z: 5
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

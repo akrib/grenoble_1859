@@ -1,0 +1,15 @@
+title: "level_25_30_5"
+description: "Un supermarché, réserve infinie mais très surveillé"
+type: "supermarche"
+district: "centre_ville"
+coordinates:
+  x: 25
+  y: 30
+  z: 5
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: true

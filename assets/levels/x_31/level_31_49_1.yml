@@ -1,0 +1,15 @@
+title: "level_31_49_1"
+description: "Un entrepôt abandonné, refuge idéal"
+type: "entrepot"
+district: "industriel"
+coordinates:
+  x: 31
+  y: 49
+  z: 1
+exits:
+  n: false
+  s: true
+  e: true
+  w: true
+  up: false
+  down: true

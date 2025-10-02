@@ -1,8 +1,15 @@
 title: "level_49_1_0"
-description: "Une forêt dense et ombragée."
-type: "foret"
+description: "Un parc verdoyant, oasis dans la ville"
+type: "parc"
+district: "banlieue"
+coordinates:
+  x: 49
+  y: 1
+  z: 0
 exits:
   n: true
   s: true
-  e: true
+  e: false
   w: true
+  up: false
+  down: false

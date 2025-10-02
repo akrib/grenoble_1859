@@ -1,8 +1,15 @@
 title: "level_47_20_0"
-description: "Une vaste plaine verdoyante."
-type: "plaine"
+description: "Une plaque d'égout menant au réseau souterrain"
+type: "entree_egout"
+district: "industriel"
+coordinates:
+  x: 47
+  y: 20
+  z: 0
 exits:
   n: true
   s: true
   e: true
   w: true
+  up: false
+  down: false

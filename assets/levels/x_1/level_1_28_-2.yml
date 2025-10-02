@@ -1,0 +1,15 @@
+title: "level_1_28_-2"
+description: "Une cachette secrète connue des rats"
+type: "cachette"
+district: "banlieue"
+coordinates:
+  x: 1
+  y: 28
+  z: -2
+exits:
+  n: true
+  s: true
+  e: true
+  w: true
+  up: true
+  down: false
