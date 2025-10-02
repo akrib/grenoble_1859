@@ -42,7 +42,8 @@ function updateCharacterSheet(char) {
 // Gestion des niveaux
 // ----------------------
 function getLevelDir(x) {
-  return `_site/assets/levels/x_${x}`;
+  // URL absolue basée sur l'origine du site
+  return window.location.origin + "/grenoble_1859/assets/levels/x_" + x;
 }
 
 async function loadYAMLLevel(levelId, x) {
