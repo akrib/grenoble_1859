@@ -51,17 +51,50 @@ layout: null
       margin-bottom: 20px;
     }
 
-    #navigation button {
-      margin: 2px;
-      padding: 5px 10px;
+    /* Rose des vents */
+    #navigation {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: auto;
+    }
+
+    .rose {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .nav-btn {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
       cursor: pointer;
     }
 
-    #navigation {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
+    .nav-btn:disabled {
+      background-color: #555;
+      cursor: not-allowed;
     }
+
+    /* 8 directions */
+    .nav-btn[data-dir="n"] { top: 0; left: 50%; transform: translate(-50%, 0); }
+    .nav-btn[data-dir="ne"] { top: 0; right: 0; transform: translate(0, 0); }
+    .nav-btn[data-dir="e"] { top: 50%; right: 0; transform: translate(0, -50%); }
+    .nav-btn[data-dir="se"] { bottom: 0; right: 0; transform: translate(0, 0); }
+    .nav-btn[data-dir="s"] { bottom: 0; left: 50%; transform: translate(-50%, 0); }
+    .nav-btn[data-dir="sw"] { bottom: 0; left: 0; transform: translate(0, 0); }
+    .nav-btn[data-dir="w"] { top: 50%; left: 0; transform: translate(0, -50%); }
+    .nav-btn[data-dir="nw"] { top: 0; left: 0; transform: translate(0, 0); }
+
+    /* Up/Down */
+    .nav-btn.nav-up { top: -50px; left: 50%; transform: translateX(-50%); }
+    .nav-btn.nav-down { bottom: -50px; left: 50%; transform: translateX(-50%); }
+
   </style>
 </head>
 <body>
@@ -80,7 +113,17 @@ layout: null
     <div id="level-description">{{ page.description | default: "Description du niveau" }}</div>
 
     <div id="navigation">
-      <!-- Boutons de navigation générés dynamiquement par game.js -->
+      <!-- Rose des vents fixe -->
+      <button class="nav-btn nav-up" data-dir="up">⬆</button>
+      <button class="nav-btn" data-dir="nw">↖</button>
+      <button class="nav-btn" data-dir="n">↑</button>
+      <button class="nav-btn" data-dir="ne">↗</button>
+      <button class="nav-btn" data-dir="w">←</button>
+      <button class="nav-btn" data-dir="e">→</button>
+      <button class="nav-btn" data-dir="sw">↙</button>
+      <button class="nav-btn" data-dir="s">↓</button>
+      <button class="nav-btn" data-dir="se">↘</button>
+      <button class="nav-btn nav-down" data-dir="down">⬇</button>
     </div>
   </div>
 
