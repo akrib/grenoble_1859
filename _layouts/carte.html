@@ -175,7 +175,7 @@ function getDistrictOverlay(district) {
 
 async function loadYAMLLevel(x, y, z) {
   const levelId = `level_${x}_${y}_${z}`;
-  const url = `${BASE_URL}/_data/levels/x_${x}/${levelId}.yml`;
+  const url = `${BASE_URL}/assets/levels/x_${x}/${levelId}.yml`;
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
