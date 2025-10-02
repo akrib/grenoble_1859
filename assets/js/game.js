@@ -32,7 +32,6 @@ function loadCharacter() {
     localStorage.setItem("character", JSON.stringify(char));
   } else {
     char = JSON.parse(char);
-    // Fusion avec les valeurs par défaut pour ajouter les propriétés manquantes
     char = { ...defaultChar, ...char };
     char.stats = { ...defaultChar.stats, ...char.stats };
     char.skills = { ...defaultChar.skills, ...char.skills };
@@ -40,7 +39,6 @@ function loadCharacter() {
 
   return char;
 }
-
 
 function saveCharacter(char) {
   localStorage.setItem("character", JSON.stringify(char));
@@ -84,7 +82,6 @@ function updateCharacterSheet(char) {
     <p><em>Position: (${char.position.x}, ${char.position.y}, ${char.position.z})</em></p>
   `;
 }
-
 
 // ----------------------
 // Gestion des niveaux
@@ -148,6 +145,100 @@ const directions = {
   down:[0,0,-1,"Descendre"]
 };
 
+// ----------------------
+// Combat
+// ----------------------
+const combatLogEl = document.getElementById("combat-log");
+const encounterButtonsEl = document.getElementById("encounter-buttons");
+
+function logCombat(message) {
+  if (!combatLogEl) return;
+  const p = document.createElement("p");
+  p.textContent = message;
+  combatLogEl.appendChild(p);
+  combatLogEl.scrollTop = combatLogEl.scrollHeight;
+}
+
+function rollDice(diceStr) {
+  const [count, sides] = diceStr.split("d").map(Number);
+  let total = 0;
+  for(let i=0;i<count;i++) total += Math.floor(Math.random()*sides)+1;
+  return total;
+}
+
+async function runCombat(player, monster) {
+  logCombat(`Un ${monster.name} apparaît !`);
+  encounterButtonsEl.style.display = "none";
+
+  while(player.hp > 0 && monster.hp > 0) {
+    const playerDamage = rollDice(player.damageDice) + player.damageBonus;
+    monster.hp -= playerDamage;
+    logCombat(`${player.name} inflige ${playerDamage} dégâts à ${monster.name} (${Math.max(monster.hp,0)} PV restants)`);
+
+    if(monster.hp <= 0) {
+      logCombat(`${monster.name} est vaincu !`);
+      player.xp += monster.xp;
+      logCombat(`${player.name} gagne ${monster.xp} XP !`);
+      updateCharacterSheet(player);
+      break;
+    }
+
+    const monsterDamage = rollDice(monster.damageDice) + monster.damageBonus;
+    player.hp -= monsterDamage;
+    logCombat(`${monster.name} attaque ${player.name} et inflige ${monsterDamage} dégâts (${Math.max(player.hp,0)} PV restants)`);
+
+    if(player.hp <= 0) {
+      logCombat(`${player.name} est vaincu !`);
+      break;
+    }
+
+    await new Promise(r => setTimeout(r, 500));
+  }
+
+  saveCharacter(player);
+}
+
+// ----------------------
+// Gestion des rencontres
+// ----------------------
+async function maybeTriggerEncounter(levelType, char) {
+  // Exemple : 20% chance de rencontre en plaine ou foret
+  if(!["plaine","foret","montagne"].includes(levelType)) return;
+  if(Math.random() > 0.2) return;
+
+  const monster = {
+    name: "Gobelin",
+    hp: 10,
+    damageDice: "1d6",
+    damageBonus: 1,
+    xp: 5
+  };
+
+  // Affichage des boutons combattre/fuir
+  encounterButtonsEl.innerHTML = "";
+  encounterButtonsEl.style.display = "block";
+
+  const fightBtn = document.createElement("button");
+  fightBtn.textContent = "Combattre";
+  fightBtn.onclick = async () => {
+    await runCombat(char, monster);
+    encounterButtonsEl.style.display = "none";
+    await renderLevel(char);
+  };
+  encounterButtonsEl.appendChild(fightBtn);
+
+  const fleeBtn = document.createElement("button");
+  fleeBtn.textContent = "Fuir";
+  fleeBtn.onclick = async () => {
+    logCombat(`${char.name} fuit le combat !`);
+    encounterButtonsEl.style.display = "none";
+  };
+  encounterButtonsEl.appendChild(fleeBtn);
+}
+
+// ----------------------
+// Affichage du niveau et navigation
+// ----------------------
 async function renderLevel(char) {
   const levels = await loadSurroundingLevels(char);
   const levelId = `level_${char.position.x}_${char.position.y}_${char.position.z}`;
@@ -155,7 +246,7 @@ async function renderLevel(char) {
 
   const titleEl = document.getElementById("level-title");
   const descEl  = document.getElementById("level-description");
-  if (level) {
+  if(level) {
     titleEl.textContent = level.title;
     descEl.textContent = level.description;
   } else {
@@ -166,23 +257,15 @@ async function renderLevel(char) {
   const dirs = ["n","ne","e","se","s","sw","w","nw","up","down"];
   dirs.forEach(dir => {
     const btn = document.querySelector(`.nav-btn[data-dir="${dir}"]`);
-    if (!btn) return;
+    if(!btn) return;
 
-    if (level && level.exits && level.exits[dir]) {
+    if(level && level.exits && level.exits[dir]) {
       btn.disabled = false;
       btn.onclick = async () => {
-        switch(dir) {
-          case "n": char.position.y += 1; break;
-          case "ne": char.position.y += 1; char.position.x += 1; break;
-          case "e": char.position.x += 1; break;
-          case "se": char.position.y -= 1; char.position.x += 1; break;
-          case "s": char.position.y -= 1; break;
-          case "sw": char.position.y -= 1; char.position.x -= 1; break;
-          case "w": char.position.x -= 1; break;
-          case "nw": char.position.y += 1; char.position.x -= 1; break;
-          case "up": char.position.z += 1; break;
-          case "down": char.position.z -= 1; break;
-        }
+        const [dx, dy, dz] = directions[dir];
+        char.position.x += dx;
+        char.position.y += dy;
+        char.position.z += dz;
         saveCharacter(char);
         updateCharacterSheet(char);
         await renderLevel(char);
@@ -197,14 +280,13 @@ async function renderLevel(char) {
 
   await drawMinimap(char, levels);
 
-if (level && level.type) {
-  maybeTriggerEncounter(level.type, char);
-}
-  
+  if(level && level.type) {
+    maybeTriggerEncounter(level.type, char);
+  }
 }
 
 // ----------------------
-// Mini-map améliorée
+// Mini-map
 // ----------------------
 async function drawMinimap(player, surroundingLevels) {
   const canvas = document.getElementById("map-canvas");
@@ -214,8 +296,8 @@ async function drawMinimap(player, surroundingLevels) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  for (let dy = -1; dy <= 1; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
+  for(let dy=-1; dy<=1; dy++) {
+    for(let dx=-1; dx<=1; dx++) {
       const levelX = player.position.x + dx;
       const levelY = player.position.y + dy;
       const levelZ = player.position.z;
@@ -223,67 +305,29 @@ async function drawMinimap(player, surroundingLevels) {
       const levelId = `level_${levelX}_${levelY}_${levelZ}`;
       const level = surroundingLevels[levelId];
 
-      const px = (dx + halfMap) * size;
-      const py = (halfMap - dy) * size;
+      const px = (dx + halfMap)*size;
+      const py = (halfMap - dy)*size;
 
-      if (level && level.type) {
+      if(level && level.type) {
         switch(level.type) {
-          case "ville":
-            ctx.fillStyle = "grey";
-            break;
-          case "foret":
-            ctx.fillStyle = "green";
-            break;
-          case "eau":
-            ctx.fillStyle = "blue";
-            break;
-          case "plaine":
-            ctx.fillStyle = "#a0d080";
-            break;
-          case "montagne":
-            ctx.fillStyle = "#888"; // gris foncé
-            break;
-          case "desert":
-            ctx.fillStyle = "#edc9af"; // sable clair
-            break;
-          case "route":
-            ctx.fillStyle = "#b5651d"; // marron route
-            break;
-          default:
-            ctx.fillStyle = "#333";
+          case "ville": ctx.fillStyle="grey"; break;
+          case "foret": ctx.fillStyle="green"; break;
+          case "eau": ctx.fillStyle="blue"; break;
+          case "plaine": ctx.fillStyle="#a0d080"; break;
+          case "montagne": ctx.fillStyle="#888"; break;
+          case "desert": ctx.fillStyle="#edc9af"; break;
+          case "route": ctx.fillStyle="#b5651d"; break;
+          default: ctx.fillStyle="#333";
         }
-      } else {
-        ctx.fillStyle = "#333";
-      }
+      } else ctx.fillStyle="#333";
 
       ctx.fillRect(px, py, size, size);
-      ctx.strokeStyle = "#000";
+      ctx.strokeStyle="#000";
       ctx.strokeRect(px, py, size, size);
 
-      if (dx === 0 && dy === 0) {
-        ctx.fillStyle = "yellow";
+      if(dx===0 && dy===0) {
+        ctx.fillStyle="yellow";
         ctx.fillRect(px+4, py+4, size-8, size-8);
-
-        if (level && level.exits) {
-          if (level.exits.up) {
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.moveTo(px + size/2, py + 3);
-            ctx.lineTo(px + size/2 - 3, py + 10);
-            ctx.lineTo(px + size/2 + 3, py + 10);
-            ctx.closePath();
-            ctx.fill();
-          }
-          if (level.exits.down) {
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.moveTo(px + size/2, py + size - 3);
-            ctx.lineTo(px + size/2 - 3, py + size - 10);
-            ctx.lineTo(px + size/2 + 3, py + size - 10);
-            ctx.closePath();
-            ctx.fill();
-          }
-        }
       }
     }
   }
