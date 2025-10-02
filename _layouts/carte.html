@@ -1,54 +1,181 @@
----
-layout: null
-title: Carte complète
----
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>{{ page.title }}</title>
+  <title>Carte de la ville</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; }
-    canvas { border: 1px solid #333; image-rendering: pixelated; }
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center;
+      background: #1a1a1a;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    canvas { 
+      border: 2px solid #666; 
+      image-rendering: pixelated;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      margin: 20px auto;
+      display: block;
+    }
+    #legend {
+      display: inline-block;
+      text-align: left;
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px auto;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 5px 0;
+    }
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 1px solid #666;
+    }
+    #controls {
+      margin: 20px;
+    }
+    button {
+      background: #4a4a4a;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #5a5a5a;
+    }
+    #info {
+      margin: 10px;
+      font-size: 14px;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
-  <h1>{{ page.title }}</h1>
+  <h1>🏙️ Carte de la ville - Vue du rat</h1>
+  
+  <div id="controls">
+    <button onclick="changeZoom(0.5)">Zoom -</button>
+    <button onclick="changeZoom(2)">Zoom +</button>
+    <button onclick="changeLevel(-1)">Niveau ↓</button>
+    <button onclick="changeLevel(1)">Niveau ↑</button>
+  </div>
+  
+  <div id="info">Niveau: <span id="current-level">0</span> | Chargement...</div>
+  
   <canvas id="full-map"></canvas>
-  <p>Chaque pixel représente un niveau</p>
+  
+  <div id="legend">
+    <h3>Légende</h3>
+    <div class="legend-item"><div class="legend-color" style="background: #2a2a2a"></div> Rue principale</div>
+    <div class="legend-item"><div class="legend-color" style="background: #3a3a3a"></div> Rue secondaire</div>
+    <div class="legend-item"><div class="legend-color" style="background: #1a1a1a"></div> Ruelle</div>
+    <div class="legend-item"><div class="legend-color" style="background: #4a4a4a"></div> Carrefour</div>
+    <div class="legend-item"><div class="legend-color" style="background: #8b4513"></div> Immeuble résidentiel</div>
+    <div class="legend-item"><div class="legend-color" style="background: #cd853f"></div> Boutique</div>
+    <div class="legend-item"><div class="legend-color" style="background: #ff6347"></div> Restaurant</div>
+    <div class="legend-item"><div class="legend-color" style="background: #ff8c00"></div> Supermarché</div>
+    <div class="legend-item"><div class="legend-color" style="background: #556b2f"></div> Parc</div>
+    <div class="legend-item"><div class="legend-color" style="background: #228b22"></div> Jardin public</div>
+    <div class="legend-item"><div class="legend-color" style="background: #6b8e23"></div> Square</div>
+    <div class="legend-item"><div class="legend-color" style="background: #696969"></div> Parking</div>
+    <div class="legend-item"><div class="legend-color" style="background: #708090"></div> Entrepôt</div>
+    <div class="legend-item"><div class="legend-color" style="background: #778899"></div> Usine</div>
+    <div class="legend-item"><div class="legend-color" style="background: #2f4f4f"></div> Gare</div>
+    <div class="legend-item"><div class="legend-color" style="background: #654321"></div> Terrain vague</div>
+    <div class="legend-item"><div class="legend-color" style="background: #006400"></div> Égout</div>
+    <div class="legend-item"><div class="legend-color" style="background: #00ff00"></div> Entrée d'égout</div>
+    <div class="legend-item"><div class="legend-color" style="background: #8b0000"></div> Nid de rats</div>
+    <div class="legend-item"><div class="legend-color" style="background: #9932cc"></div> Cachette</div>
+    <div class="legend-item"><div class="legend-color" style="background: #808000"></div> Poubelles</div>
+    <div class="legend-item"><div class="legend-color" style="background: #87ceeb"></div> Toit</div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-<script>
-const BASE_URL = "{{ site.baseurl }}";
+  <script>
+const BASE_URL = window.location.origin;
 
-const minX = -50, maxX = 50;
-const minY = -50, maxY = 50;
-const z = 0;
+const minX = 0, maxX = 50;
+const minY = 0, maxY = 50;
+let currentZ = 0;
+
+const TILE_SIZE = 4; // 4x4 pixels par tuile
 
 const canvas = document.getElementById("full-map");
-const width = maxX - minX + 1;
-const height = maxY - minY + 1;
+const width = (maxX - minX + 1) * TILE_SIZE;
+const height = (maxY - minY + 1) * TILE_SIZE;
 canvas.width = width;
 canvas.height = height;
 const ctx = canvas.getContext("2d");
 
+let zoomLevel = 1;
+
 function getBiomeColor(type) {
-  switch(type) {
-    case "ville": return "#888888";
-    case "foret": return "#008000";
-    case "eau": return "#0000ff";
-    case "plaine": return "#a0d080";
-    case "montagne": return "#aaaaaa";
-    case "desert": return "#edc9af";
-    case "route": return "#b5651d";
-    default: return "#333333"; // inconnu
-  }
+  const colors = {
+    // Rues
+    "rue_principale": "#2a2a2a",
+    "rue_secondaire": "#3a3a3a",
+    "ruelle": "#1a1a1a",
+    "impasse": "#2d2d2d",
+    "carrefour": "#4a4a4a",
+    
+    // Bâtiments résidentiels
+    "immeuble_residentiel": "#8b4513",
+    "boutique": "#cd853f",
+    "restaurant": "#ff6347",
+    "supermarche": "#ff8c00",
+    
+    // Bâtiments industriels
+    "entrepot": "#708090",
+    "usine": "#778899",
+    "parking": "#696969",
+    "gare": "#2f4f4f",
+    "metro": "#1c1c1c",
+    "pont": "#5a5a5a",
+    
+    // Espaces verts
+    "parc": "#556b2f",
+    "jardin_public": "#228b22",
+    "square": "#6b8e23",
+    
+    // Spécial rat
+    "egout": "#006400",
+    "entree_egout": "#00ff00",
+    "cachette": "#9932cc",
+    "nid_rats": "#8b0000",
+    "poubelles": "#808000",
+    "toit": "#87ceeb",
+    "terrain_vague": "#654321",
+    
+    // Par défaut
+    "default": "#333333"
+  };
+  
+  return colors[type] || colors["default"];
+}
+
+function getDistrictOverlay(district) {
+  const overlays = {
+    "centre_ville": "rgba(255, 215, 0, 0.1)",
+    "residentiel": "rgba(135, 206, 250, 0.1)",
+    "industriel": "rgba(169, 169, 169, 0.1)",
+    "banlieue": "rgba(144, 238, 144, 0.1)"
+  };
+  return overlays[district] || null;
 }
 
 async function loadYAMLLevel(x, y, z) {
   const levelId = `level_${x}_${y}_${z}`;
-  const url = `${BASE_URL}/assets/levels/x_${x}/${levelId}.yml`;
+  const url = `${BASE_URL}/_data/levels/x_${x}/${levelId}.yml`;
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
@@ -59,31 +186,93 @@ async function loadYAMLLevel(x, y, z) {
   }
 }
 
+function drawTile(x, y, color, district) {
+  const pixelX = (x - minX) * TILE_SIZE;
+  const pixelY = (y - minY) * TILE_SIZE;
+  
+  // Couleur de base
+  ctx.fillStyle = color;
+  ctx.fillRect(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
+  
+  // Overlay du district (optionnel)
+  if (district) {
+    const overlay = getDistrictOverlay(district);
+    if (overlay) {
+      ctx.fillStyle = overlay;
+      ctx.fillRect(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
+    }
+  }
+  
+  // Bordure subtile pour séparer les tuiles
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.lineWidth = 0.5;
+  ctx.strokeRect(pixelX, pixelY, TILE_SIZE, TILE_SIZE);
+}
+
 async function drawFullMap() {
+  // Efface le canvas
+  ctx.fillStyle = "#0a0a0a";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
   const tasks = [];
+  const infoEl = document.getElementById("info");
+  infoEl.textContent = `Niveau: ${currentZ} | Chargement en cours...`;
 
   for (let x = minX; x <= maxX; x++) {
     for (let y = minY; y <= maxY; y++) {
-      tasks.push({x,y});
+      tasks.push({x, y});
     }
   }
 
-  // Traite les fetchs par paquets (50 à la fois)
-  const batchSize = 50;
+  // Traite les fetchs par paquets
+  const batchSize = 100;
+  let loaded = 0;
+  
   for (let i = 0; i < tasks.length; i += batchSize) {
-    const batch = tasks.slice(i, i+batchSize).map(async ({x,y}) => {
-      const level = await loadYAMLLevel(x,y,z);
-      const color = level && level.type ? getBiomeColor(level.type) : "#333";
-      ctx.fillStyle = color;
-      ctx.fillRect(x - minX, y - minY, 1, 1);
+    const batch = tasks.slice(i, i + batchSize).map(async ({x, y}) => {
+      const level = await loadYAMLLevel(x, y, currentZ);
+      const color = level && level.type ? getBiomeColor(level.type) : "#0a0a0a";
+      const district = level ? level.district : null;
+      drawTile(x, y, color, district);
+      loaded++;
+      
+      // Mise à jour de la progression
+      if (loaded % 500 === 0) {
+        const percent = Math.round((loaded / tasks.length) * 100);
+        infoEl.textContent = `Niveau: ${currentZ} | Chargement: ${percent}%`;
+      }
     });
-    await Promise.all(batch); // attend la fin du lot avant de continuer
+    await Promise.all(batch);
   }
 
-  console.log("Carte complète générée !");
+  infoEl.textContent = `Niveau: ${currentZ} | ${loaded} tuiles chargées`;
+  console.log(`Carte niveau ${currentZ} générée !`);
 }
 
+function changeZoom(factor) {
+  zoomLevel *= factor;
+  canvas.style.width = (width * zoomLevel) + "px";
+  canvas.style.height = (height * zoomLevel) + "px";
+}
+
+function changeLevel(delta) {
+  currentZ += delta;
+  document.getElementById("current-level").textContent = currentZ;
+  drawFullMap();
+}
+
+// Initialisation
 drawFullMap();
-</script
+
+// Interaction souris (affiche les coordonnées au survol)
+canvas.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX / TILE_SIZE) + minX;
+  const y = Math.floor((e.clientY - rect.top) * scaleY / TILE_SIZE) + minY;
+  canvas.title = `Position: (${x}, ${y}, ${currentZ})`;
+});
+</script>
 </body>
 </html>
