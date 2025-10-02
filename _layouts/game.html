@@ -51,50 +51,35 @@ layout: null
       margin-bottom: 20px;
     }
 
-    /* Rose des vents */
     #navigation {
-      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 5px;
+      justify-items: center;
+      align-items: center;
       width: 200px;
-      height: 200px;
-      margin: auto;
-    }
-
-    .rose {
+      margin: 20px auto;
       position: relative;
-      width: 100%;
-      height: 100%;
     }
 
-    .nav-btn {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
+    #navigation button {
+      padding: 6px 10px;
       cursor: pointer;
+      min-width: 50px;
+      min-height: 30px;
     }
 
-    .nav-btn:disabled {
-      background-color: #555;
-      cursor: not-allowed;
+    /* Monter / Descendre placés à droite */
+    .vertical-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: absolute;
+      right: -80px;
+      top: 50%;
+      transform: translateY(-50%);
     }
-
-    /* 8 directions */
-    .nav-btn[data-dir="n"] { top: 0; left: 50%; transform: translate(-50%, 0); }
-    .nav-btn[data-dir="ne"] { top: 0; right: 0; transform: translate(0, 0); }
-    .nav-btn[data-dir="e"] { top: 50%; right: 0; transform: translate(0, -50%); }
-    .nav-btn[data-dir="se"] { bottom: 0; right: 0; transform: translate(0, 0); }
-    .nav-btn[data-dir="s"] { bottom: 0; left: 50%; transform: translate(-50%, 0); }
-    .nav-btn[data-dir="sw"] { bottom: 0; left: 0; transform: translate(0, 0); }
-    .nav-btn[data-dir="w"] { top: 50%; left: 0; transform: translate(0, -50%); }
-    .nav-btn[data-dir="nw"] { top: 0; left: 0; transform: translate(0, 0); }
-
-    /* Up/Down */
-    .nav-btn.nav-up { top: -50px; left: 50%; transform: translateX(-50%); }
-    .nav-btn.nav-down { bottom: -50px; left: 50%; transform: translateX(-50%); }
-
   </style>
 </head>
 <body>
@@ -113,29 +98,37 @@ layout: null
     <div id="level-description">{{ page.description | default: "Description du niveau" }}</div>
 
     <div id="navigation">
-      <!-- Rose des vents fixe -->
-      <button class="nav-btn nav-up" data-dir="up">⬆</button>
+      <!-- Ligne du haut -->
       <button class="nav-btn" data-dir="nw">↖</button>
       <button class="nav-btn" data-dir="n">↑</button>
       <button class="nav-btn" data-dir="ne">↗</button>
+
+      <!-- Ligne du milieu -->
       <button class="nav-btn" data-dir="w">←</button>
+      <div></div>
       <button class="nav-btn" data-dir="e">→</button>
+
+      <!-- Ligne du bas -->
       <button class="nav-btn" data-dir="sw">↙</button>
       <button class="nav-btn" data-dir="s">↓</button>
       <button class="nav-btn" data-dir="se">↘</button>
-      <button class="nav-btn nav-down" data-dir="down">⬇</button>
+
+      <!-- Monter / Descendre -->
+      <div class="vertical-controls">
+        <button class="nav-btn" data-dir="up">Monter</button>
+        <button class="nav-btn" data-dir="down">Descendre</button>
+      </div>
     </div>
   </div>
 
-  <!-- Bibliothèque YAML pour parser les fichiers -->
+  <!-- Bibliothèque YAML -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
   <!-- Script du jeu -->
   <script src="{{ site.baseurl }}/assets/js/game.js"></script>
 
-  <!-- Injection possible de variables YAML du level si nécessaire -->
   <script>
     window.levelData = {{ page | jsonify }};
-    const BASE_URL = "{{ site.baseurl }}"; // /grenoble_1859
+    const BASE_URL = "{{ site.baseurl }}";
   </script>
 
 </body>
