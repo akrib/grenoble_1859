@@ -46,7 +46,58 @@ function maybeTriggerEncounter(biome, char) {
     }
   }
 }
+// Conteneur log
+const combatLogEl = document.getElementById("combat-log");
 
+// Ajoute un message au log
+function logCombat(message) {
+  if (!combatLogEl) return;
+  const p = document.createElement("p");
+  p.textContent = message;
+  combatLogEl.appendChild(p);
+  combatLogEl.scrollTop = combatLogEl.scrollHeight; // scroll automatique
+}
+
+// Combat automatique entre player et monstre
+async function runCombat(player, monster) {
+  logCombat(`Un ${monster.name} apparaît !`);
+
+  while(player.hp > 0 && monster.hp > 0) {
+    // Tour joueur
+    const playerDamage = rollDice(player.damageDice) + player.damageBonus;
+    monster.hp -= playerDamage;
+    logCombat(`${player.name} inflige ${playerDamage} points de dégâts à ${monster.name} (${Math.max(monster.hp,0)} PV restants)`);
+
+    if(monster.hp <= 0) {
+      logCombat(`${monster.name} est vaincu !`);
+      player.xp += monster.xp;
+      logCombat(`${player.name} gagne ${monster.xp} XP !`);
+      updateCharacterSheet(player);
+      break;
+    }
+
+    // Tour monstre
+    const monsterDamage = rollDice(monster.damageDice) + monster.damageBonus;
+    player.hp -= monsterDamage;
+    logCombat(`${monster.name} attaque ${player.name} et inflige ${monsterDamage} dégâts (${Math.max(player.hp,0)} PV restants)`);
+
+    if(player.hp <= 0) {
+      logCombat(`${player.name} est vaincu !`);
+      break;
+    }
+
+    // Petite pause pour lisibilité
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+
+// Fonction simple pour lancer un dé type "1d8", "2d6"...
+function rollDice(diceStr) {
+  const [count, sides] = diceStr.split("d").map(Number);
+  let total = 0;
+  for(let i=0;i<count;i++) total += Math.floor(Math.random()*sides)+1;
+  return total;
+}
 // Représentation d'un personnage ou ennemi
 class Combatant {
   constructor(name, hp, attackBonus, defense, damageDice, damageBonus) {
@@ -66,18 +117,18 @@ class Combatant {
 
 // --------- Outils ---------
 
-function rollDice(formula) {
-  // Exemple : "2d6+3"
-  let match = formula.match(/(\d+)d(\d+)/);
-  if (!match) return 0;
-  let nb = parseInt(match[1], 10);
-  let faces = parseInt(match[2], 10);
-  let total = 0;
-  for (let i = 0; i < nb; i++) {
-    total += Math.floor(Math.random() * faces) + 1;
-  }
-  return total;
-}
+// function rollDice(formula) {
+//   // Exemple : "2d6+3"
+//   let match = formula.match(/(\d+)d(\d+)/);
+//   if (!match) return 0;
+//   let nb = parseInt(match[1], 10);
+//   let faces = parseInt(match[2], 10);
+//   let total = 0;
+//   for (let i = 0; i < nb; i++) {
+//     total += Math.floor(Math.random() * faces) + 1;
+//   }
+//   return total;
+// }
 
 function rollD20() {
   return Math.floor(Math.random() * 20) + 1;
@@ -112,35 +163,35 @@ function attack(attacker, defender) {
 
 // --------- Exemple de boucle ---------
 
-async function startCombat(player, enemies) {
-  let combatants = [player, ...enemies];
-  combatants = rollInitiative(combatants);
+// async function startCombat(player, enemies) {
+//   let combatants = [player, ...enemies];
+//   combatants = rollInitiative(combatants);
 
-  console.log("Ordre d'initiative :", combatants.map(c => c.name).join(", "));
+//   console.log("Ordre d'initiative :", combatants.map(c => c.name).join(", "));
 
-  while (combatants.some(c => c.isAlive() && c !== player) && player.isAlive()) {
-    for (let c of combatants) {
-      if (!c.isAlive()) continue;
+//   while (combatants.some(c => c.isAlive() && c !== player) && player.isAlive()) {
+//     for (let c of combatants) {
+//       if (!c.isAlive()) continue;
 
-      if (c === player) {
-        // ici on pourrait brancher sur une UI (choix de l’action)
-        console.log("C'est à toi de jouer !");
-        // pour test : attaquer le premier ennemi vivant
-        let target = enemies.find(e => e.isAlive());
-        if (target) attack(player, target);
-      } else {
-        // ennemi attaque le joueur
-        if (player.isAlive()) attack(c, player);
-      }
-    }
-  }
+//       if (c === player) {
+//         // ici on pourrait brancher sur une UI (choix de l’action)
+//         console.log("C'est à toi de jouer !");
+//         // pour test : attaquer le premier ennemi vivant
+//         let target = enemies.find(e => e.isAlive());
+//         if (target) attack(player, target);
+//       } else {
+//         // ennemi attaque le joueur
+//         if (player.isAlive()) attack(c, player);
+//       }
+//     }
+//   }
 
-  if (player.isAlive()) {
-    console.log("Victoire !");
-  } else {
-    console.log("Défaite...");
-  }
-}
+//   if (player.isAlive()) {
+//     console.log("Victoire !");
+//   } else {
+//     console.log("Défaite...");
+//   }
+// }
 
 // --------- Export ---------
 
