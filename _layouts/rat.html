@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur de rat en pixel art</title>
+    <title>Générateur de rat en pixel art (procédural)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,113 +41,172 @@
         const generateBtn = document.getElementById('generateBtn');
         const downloadLink = document.getElementById('downloadLink');
 
-        function randomInt(min, max) {
+        // --- Fonctions utilitaires ---
+        function rand(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        function randomColor() {
-            const colors = [
-                '#654321', '#7D5A3C', '#9C7A53', '#A88F6F', // Bruns
-                '#3A3A3A', '#555555', '#777777', '#999999', // Gris
-                '#4A2E1A', '#6B4F2F', '#8B6F4F', '#AB8F6F'  // Bruns chauds
-            ];
-            return colors[randomInt(0, colors.length - 1)];
+        function randColor(baseColors) {
+            return baseColors[rand(0, baseColors.length - 1)];
         }
 
+        // --- Dessin du rat ---
         function drawRat() {
             ctx.clearRect(0, 0, 64, 64);
-            const bodyColor = randomColor();
-            const eyeColor = '#000000';
-            const earColor = bodyColor;
-            const tailColor = randomColor();
 
-            // Corps (ellipse)
+            // 1. Palette de couleurs réalistes
+            const bodyColors = ['#654321', '#7D5A3C', '#9C7A53', '#A88F6F', '#3A3A3A', '#555555', '#777777'];
+            const bellyColors = ['#A88F6F', '#C9B99F', '#E0D5C7', '#999999'];
+            const tailColors = ['#4A2E1A', '#6B4F2F', '#8B6F4F', '#333333'];
+
+            const bodyColor = randColor(bodyColors);
+            const bellyColor = randColor(bellyColors);
+            const tailColor = randColor(tailColors);
+
+            // 2. Corps (allongé, dos arqué)
             ctx.fillStyle = bodyColor;
             ctx.beginPath();
             ctx.ellipse(
                 32, 32,
-                randomInt(20, 28), randomInt(12, 18),
+                rand(20, 24), rand(12, 16),
                 0, 0, Math.PI * 2
             );
             ctx.fill();
 
-            // Tête (cercle)
+            // Ventre (plus clair)
+            ctx.fillStyle = bellyColor;
             ctx.beginPath();
-            ctx.arc(
-                randomInt(20, 28), randomInt(18, 24),
-                randomInt(8, 12), 0, Math.PI * 2
+            ctx.ellipse(
+                32, 38,
+                rand(16, 20), rand(6, 10),
+                0, 0, Math.PI * 2
             );
             ctx.fill();
 
-            // Oreilles (2 cercles)
+            // 3. Tête (arrondie, museau pointu)
+            ctx.fillStyle = bodyColor;
             ctx.beginPath();
-            ctx.arc(
-                randomInt(16, 20), randomInt(12, 16),
-                randomInt(3, 5), 0, Math.PI * 2
-            );
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(
-                randomInt(24, 28), randomInt(12, 16),
-                randomInt(3, 5), 0, Math.PI * 2
+            ctx.ellipse(
+                rand(20, 26), rand(18, 22),
+                rand(8, 12), rand(6, 10),
+                0, 0, Math.PI * 2
             );
             ctx.fill();
 
-            // Yeux (2 points)
-            ctx.fillStyle = eyeColor;
+            // Museau (pointu)
             ctx.beginPath();
-            ctx.arc(
-                randomInt(22, 26), randomInt(18, 22),
-                1, 0, Math.PI * 2
+            ctx.moveTo(rand(20, 26), rand(18, 22));
+            ctx.lineTo(rand(16, 20), rand(14, 18));
+            ctx.lineTo(rand(20, 26), rand(22, 26));
+            ctx.closePath();
+            ctx.fill();
+
+            // Narines
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(rand(18, 22), rand(18, 22), 1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(rand(22, 26), rand(18, 22), 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 4. Yeux (noirs, saillants)
+            ctx.fillStyle = '#000000';
+            ctx.beginPath();
+            ctx.arc(rand(22, 26), rand(16, 20), 1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(rand(28, 32), rand(16, 20), 1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 5. Oreilles (grandes, fines, arrondies)
+            ctx.fillStyle = bodyColor;
+            ctx.beginPath();
+            ctx.ellipse(
+                rand(16, 20), rand(10, 14),
+                rand(4, 6), rand(2, 4),
+                0, 0, Math.PI * 2
             );
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(
-                randomInt(28, 32), randomInt(18, 22),
-                1, 0, Math.PI * 2
+            ctx.ellipse(
+                rand(26, 30), rand(10, 14),
+                rand(4, 6), rand(2, 4),
+                0, 0, Math.PI * 2
             );
             ctx.fill();
 
-            // Queue (ligne courbe)
-            ctx.strokeStyle = tailColor;
-            ctx.lineWidth = randomInt(1, 3);
-            ctx.beginPath();
-            ctx.moveTo(randomInt(40, 48), randomInt(30, 38));
-            ctx.bezierCurveTo(
-                randomInt(48, 56), randomInt(24, 40),
-                randomInt(52, 60), randomInt(20, 44),
-                randomInt(56, 62), randomInt(28, 40)
-            );
-            ctx.stroke();
+            // 6. Vibrisses (moustaches, 2-3 de chaque côté)
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(rand(18, 22), rand(20, 24));
+                ctx.lineTo(rand(10, 16), rand(18, 26));
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(rand(26, 30), rand(20, 24));
+                ctx.lineTo(rand(34, 40), rand(18, 26));
+                ctx.stroke();
+            }
 
-            // Pattes (4 lignes)
+            // 7. Pattes avant (courtes, griffues)
             ctx.strokeStyle = bodyColor;
-            ctx.lineWidth = randomInt(1, 2);
-            // Avant
+            ctx.lineWidth = rand(1, 2);
+            // Patte avant gauche
             ctx.beginPath();
-            ctx.moveTo(randomInt(24, 30), randomInt(36, 42));
-            ctx.lineTo(randomInt(22, 28), randomInt(42, 48));
+            ctx.moveTo(rand(24, 28), rand(36, 40));
+            ctx.lineTo(rand(22, 26), rand(40, 46));
             ctx.stroke();
+            // Patte avant droite
             ctx.beginPath();
-            ctx.moveTo(randomInt(30, 36), randomInt(36, 42));
-            ctx.lineTo(randomInt(32, 38), randomInt(42, 48));
+            ctx.moveTo(rand(32, 36), rand(36, 40));
+            ctx.lineTo(rand(34, 38), rand(40, 46));
             ctx.stroke();
-            // Arrière
+
+            // 8. Pattes arrière (longues, musclées)
+            // Patte arrière gauche
             ctx.beginPath();
-            ctx.moveTo(randomInt(36, 42), randomInt(36, 42));
-            ctx.lineTo(randomInt(38, 44), randomInt(42, 48));
+            ctx.moveTo(rand(36, 40), rand(38, 42));
+            ctx.lineTo(rand(34, 38), rand(44, 50));
             ctx.stroke();
+            // Patte arrière droite
             ctx.beginPath();
-            ctx.moveTo(randomInt(42, 48), randomInt(36, 42));
-            ctx.lineTo(randomInt(44, 50), randomInt(42, 48));
+            ctx.moveTo(rand(40, 44), rand(38, 42));
+            ctx.lineTo(rand(42, 46), rand(44, 50));
             ctx.stroke();
+
+            // 9. Queue (fine, écailleuse, recourbée)
+            ctx.strokeStyle = tailColor;
+            ctx.lineWidth = rand(1, 2);
+            ctx.beginPath();
+            ctx.moveTo(rand(40, 46), rand(34, 38));
+            ctx.bezierCurveTo(
+                rand(46, 52), rand(30, 40),
+                rand(50, 56), rand(24, 36),
+                rand(54, 60), rand(30, 40)
+            );
+            ctx.stroke();
+
+            // 10. Dents (optionnel, si bouche ouverte)
+            if (Math.random() > 0.7) {
+                ctx.fillStyle = '#FFCC80';
+                ctx.beginPath();
+                ctx.moveTo(rand(20, 24), rand(22, 26));
+                ctx.lineTo(rand(22, 26), rand(24, 28));
+                ctx.lineTo(rand(22, 26), rand(26, 30));
+                ctx.closePath();
+                ctx.fill();
+            }
         }
 
+        // --- Mise à jour du lien de téléchargement ---
         function updateDownloadLink() {
             const dataURL = canvas.toDataURL('image/png');
             downloadLink.href = dataURL;
         }
 
+        // --- Événements ---
         generateBtn.addEventListener('click', () => {
             drawRat();
             updateDownloadLink();
