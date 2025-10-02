@@ -1,0 +1,540 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Download, RefreshCw, Sliders } from 'lucide-react';
+
+const ProceduralRatGenerator = () => {
+  const canvasRef = useRef(null);
+  const [seed, setSeed] = useState(Math.random());
+  const [config, setConfig] = useState({
+    bodyColor: 'random',
+    eyeColor: 'random',
+    size: 'medium',
+    pose: 'standing',
+    accessories: true,
+    style: 'realistic'
+  });
+  const [showControls, setShowControls] = useState(false);
+
+  // Générateur pseudo-aléatoire à partir d'un seed
+  const seededRandom = (seed) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const getRandomColor = (seed, colorType) => {
+    const rand = seededRandom(seed);
+    
+    if (colorType === 'body') {
+      const colors = [
+        { name: 'gris', rgb: [120, 120, 120] },
+        { name: 'brun', rgb: [101, 67, 33] },
+        { name: 'noir', rgb: [40, 40, 40] },
+        { name: 'blanc', rgb: [220, 220, 220] },
+        { name: 'beige', rgb: [194, 178, 128] },
+        { name: 'roux', rgb: [150, 75, 0] }
+      ];
+      const index = Math.floor(rand * colors.length);
+      return colors[index].rgb;
+    } else if (colorType === 'eyes') {
+      const colors = [
+        [255, 100, 100], // Rouge
+        [50, 50, 50],    // Noir
+        [139, 69, 19],   // Marron
+        [255, 200, 100]  // Ambre
+      ];
+      const index = Math.floor(rand * colors.length);
+      return colors[index];
+    }
+  };
+
+  const drawRat = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clear canvas
+    ctx.fillStyle = '#f5f5f5';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Generate rat parameters from seed
+    let currentSeed = seed;
+    const nextRand = () => {
+      currentSeed += 1;
+      return seededRandom(currentSeed);
+    };
+    
+    // Colors
+    const bodyColor = config.bodyColor === 'random' 
+      ? getRandomColor(currentSeed++, 'body')
+      : config.bodyColor;
+    const eyeColor = config.eyeColor === 'random'
+      ? getRandomColor(currentSeed++, 'eyes')
+      : config.eyeColor;
+    
+    // Size variations
+    const sizeMultiplier = config.size === 'small' ? 0.7 : 
+                          config.size === 'large' ? 1.3 : 1;
+    
+    // Position base
+    const baseX = width / 2;
+    const baseY = height * 0.65;
+    
+    // Body shape variations
+    const bodyWidth = (60 + nextRand() * 30) * sizeMultiplier;
+    const bodyHeight = (40 + nextRand() * 20) * sizeMultiplier;
+    const fatness = 0.6 + nextRand() * 0.4; // 0.6 à 1.0
+    
+    // Pose adjustments
+    let bodyAngle = 0;
+    let headOffsetY = 0;
+    let tailCurve = 1;
+    
+    if (config.pose === 'sitting') {
+      bodyAngle = 0.3;
+      headOffsetY = -10;
+    } else if (config.pose === 'alert') {
+      headOffsetY = -15;
+      tailCurve = 1.5;
+    } else if (config.pose === 'sneaking') {
+      bodyAngle = -0.2;
+      headOffsetY = 5;
+    }
+    
+    ctx.save();
+    ctx.translate(baseX, baseY);
+    ctx.rotate(bodyAngle);
+    
+    // Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.beginPath();
+    ctx.ellipse(0, bodyHeight * 0.6, bodyWidth * 0.8, bodyHeight * 0.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Tail
+    ctx.strokeStyle = `rgba(${bodyColor[0] * 0.8}, ${bodyColor[1] * 0.8}, ${bodyColor[2] * 0.8}, 0.9)`;
+    ctx.lineWidth = 4 + nextRand() * 3;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-bodyWidth * 0.5, 0);
+    
+    const tailLength = 80 + nextRand() * 40;
+    const tailCurveAmount = (nextRand() - 0.5) * 60 * tailCurve;
+    
+    ctx.quadraticCurveTo(
+      -bodyWidth * 0.5 - tailLength * 0.5, 
+      tailCurveAmount,
+      -bodyWidth * 0.5 - tailLength, 
+      tailCurveAmount * 0.5
+    );
+    ctx.stroke();
+    
+    // Back legs
+    const legColor = `rgb(${bodyColor[0] * 0.7}, ${bodyColor[1] * 0.7}, ${bodyColor[2] * 0.7})`;
+    
+    for (let i = -1; i <= 1; i += 2) {
+      ctx.fillStyle = legColor;
+      ctx.beginPath();
+      ctx.ellipse(
+        -bodyWidth * 0.2 * i, 
+        bodyHeight * 0.4, 
+        8 * sizeMultiplier, 
+        15 * sizeMultiplier, 
+        i * 0.3, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Paws
+      ctx.fillStyle = `rgb(${bodyColor[0] * 0.5}, ${bodyColor[1] * 0.5}, ${bodyColor[2] * 0.5})`;
+      ctx.beginPath();
+      ctx.ellipse(
+        -bodyWidth * 0.2 * i, 
+        bodyHeight * 0.5, 
+        10 * sizeMultiplier, 
+        6 * sizeMultiplier, 
+        0, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+    
+    // Body
+    ctx.fillStyle = `rgb(${bodyColor[0]}, ${bodyColor[1]}, ${bodyColor[2]})`;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, bodyWidth * 0.5, bodyHeight * 0.5 * fatness, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Fur texture
+    if (config.style === 'realistic') {
+      ctx.strokeStyle = `rgba(${bodyColor[0] * 0.8}, ${bodyColor[1] * 0.8}, ${bodyColor[2] * 0.8}, 0.3)`;
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 20; i++) {
+        const angle = nextRand() * Math.PI * 2;
+        const dist = nextRand() * bodyWidth * 0.4;
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist * fatness;
+        const length = 3 + nextRand() * 5;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + Math.cos(angle) * length, y + Math.sin(angle) * length);
+        ctx.stroke();
+      }
+    }
+    
+    // Belly (lighter)
+    const bellySize = 0.5 + nextRand() * 0.3;
+    ctx.fillStyle = `rgba(${Math.min(255, bodyColor[0] + 40)}, ${Math.min(255, bodyColor[1] + 40)}, ${Math.min(255, bodyColor[2] + 40)}, 0.7)`;
+    ctx.beginPath();
+    ctx.ellipse(0, bodyHeight * 0.1, bodyWidth * 0.3 * bellySize, bodyHeight * 0.35 * bellySize, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Front legs
+    for (let i = -1; i <= 1; i += 2) {
+      ctx.fillStyle = legColor;
+      ctx.beginPath();
+      ctx.ellipse(
+        bodyWidth * 0.25 * i, 
+        bodyHeight * 0.3, 
+        7 * sizeMultiplier, 
+        14 * sizeMultiplier, 
+        i * 0.2, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      ctx.fillStyle = `rgb(${bodyColor[0] * 0.5}, ${bodyColor[1] * 0.5}, ${bodyColor[2] * 0.5})`;
+      ctx.beginPath();
+      ctx.ellipse(
+        bodyWidth * 0.28 * i, 
+        bodyHeight * 0.42, 
+        8 * sizeMultiplier, 
+        5 * sizeMultiplier, 
+        0, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+    
+    // Head
+    const headSize = (30 + nextRand() * 10) * sizeMultiplier;
+    ctx.fillStyle = `rgb(${bodyColor[0]}, ${bodyColor[1]}, ${bodyColor[2]})`;
+    ctx.beginPath();
+    ctx.ellipse(
+      bodyWidth * 0.4, 
+      -bodyHeight * 0.2 + headOffsetY, 
+      headSize * 0.6, 
+      headSize * 0.5, 
+      0, 
+      0, 
+      Math.PI * 2
+    );
+    ctx.fill();
+    
+    // Snout
+    const snoutLength = 15 + nextRand() * 8;
+    ctx.fillStyle = `rgb(${Math.min(255, bodyColor[0] + 20)}, ${Math.min(255, bodyColor[1] + 20)}, ${Math.min(255, bodyColor[2] + 20)})`;
+    ctx.beginPath();
+    ctx.ellipse(
+      bodyWidth * 0.4 + headSize * 0.5, 
+      -bodyHeight * 0.2 + headOffsetY, 
+      snoutLength, 
+      headSize * 0.3, 
+      0, 
+      0, 
+      Math.PI * 2
+    );
+    ctx.fill();
+    
+    // Nose
+    ctx.fillStyle = '#ff69b4';
+    ctx.beginPath();
+    ctx.arc(
+      bodyWidth * 0.4 + headSize * 0.5 + snoutLength - 3, 
+      -bodyHeight * 0.2 + headOffsetY, 
+      4, 
+      0, 
+      Math.PI * 2
+    );
+    ctx.fill();
+    
+    // Ears
+    const earSize = 12 + nextRand() * 6;
+    for (let i = -1; i <= 1; i += 2) {
+      // Outer ear
+      ctx.fillStyle = `rgb(${bodyColor[0]}, ${bodyColor[1]}, ${bodyColor[2]})`;
+      ctx.beginPath();
+      ctx.ellipse(
+        bodyWidth * 0.35 + (i * earSize * 0.6), 
+        -bodyHeight * 0.2 + headOffsetY - headSize * 0.4, 
+        earSize, 
+        earSize * 1.2, 
+        i * 0.3, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Inner ear
+      ctx.fillStyle = '#ffb6c1';
+      ctx.beginPath();
+      ctx.ellipse(
+        bodyWidth * 0.35 + (i * earSize * 0.6), 
+        -bodyHeight * 0.2 + headOffsetY - headSize * 0.4, 
+        earSize * 0.5, 
+        earSize * 0.7, 
+        i * 0.3, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+    
+    // Eyes
+    const eyeSize = 5 + nextRand() * 3;
+    for (let i = -1; i <= 1; i += 2) {
+      // White of eye
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(
+        bodyWidth * 0.38 + (i * 8), 
+        -bodyHeight * 0.25 + headOffsetY, 
+        eyeSize, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Iris
+      ctx.fillStyle = `rgb(${eyeColor[0]}, ${eyeColor[1]}, ${eyeColor[2]})`;
+      ctx.beginPath();
+      ctx.arc(
+        bodyWidth * 0.38 + (i * 8), 
+        -bodyHeight * 0.25 + headOffsetY, 
+        eyeSize * 0.6, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Pupil
+      ctx.fillStyle = 'black';
+      ctx.beginPath();
+      ctx.arc(
+        bodyWidth * 0.38 + (i * 8), 
+        -bodyHeight * 0.25 + headOffsetY, 
+        eyeSize * 0.3, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+      
+      // Highlight
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.beginPath();
+      ctx.arc(
+        bodyWidth * 0.38 + (i * 8) - 1, 
+        -bodyHeight * 0.25 + headOffsetY - 1, 
+        eyeSize * 0.15, 
+        0, 
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+    
+    // Whiskers
+    ctx.strokeStyle = `rgba(${bodyColor[0] * 0.6}, ${bodyColor[1] * 0.6}, ${bodyColor[2] * 0.6}, 0.6)`;
+    ctx.lineWidth = 1;
+    const whiskerCount = 3;
+    for (let side = -1; side <= 1; side += 2) {
+      for (let i = 0; i < whiskerCount; i++) {
+        const angle = (i - whiskerCount / 2) * 0.3;
+        const length = 30 + nextRand() * 20;
+        ctx.beginPath();
+        ctx.moveTo(
+          bodyWidth * 0.4 + headSize * 0.3, 
+          -bodyHeight * 0.22 + headOffsetY + (i - 1) * 3
+        );
+        ctx.lineTo(
+          bodyWidth * 0.4 + headSize * 0.3 + Math.cos(angle) * length * side, 
+          -bodyHeight * 0.22 + headOffsetY + (i - 1) * 3 + Math.sin(angle) * length
+        );
+        ctx.stroke();
+      }
+    }
+    
+    // Accessories
+    if (config.accessories && nextRand() > 0.5) {
+      const accessoryType = Math.floor(nextRand() * 3);
+      
+      if (accessoryType === 0) {
+        // Small collar
+        ctx.strokeStyle = `hsl(${nextRand() * 360}, 70%, 50%)`;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(bodyWidth * 0.3, -bodyHeight * 0.1 + headOffsetY, headSize * 0.4, 0, Math.PI * 2);
+        ctx.stroke();
+      } else if (accessoryType === 1) {
+        // Scar
+        ctx.strokeStyle = 'rgba(139, 0, 0, 0.5)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bodyWidth * 0.35, -bodyHeight * 0.28 + headOffsetY);
+        ctx.lineTo(bodyWidth * 0.42, -bodyHeight * 0.23 + headOffsetY);
+        ctx.stroke();
+      } else {
+        // Patch of different color fur
+        ctx.fillStyle = `rgba(${nextRand() * 255}, ${nextRand() * 255}, ${nextRand() * 255}, 0.3)`;
+        ctx.beginPath();
+        ctx.ellipse(
+          -bodyWidth * 0.1, 
+          -bodyHeight * 0.05, 
+          15, 
+          10, 
+          nextRand() * Math.PI, 
+          0, 
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+    }
+    
+    ctx.restore();
+  };
+
+  useEffect(() => {
+    drawRat();
+  }, [seed, config]);
+
+  const regenerate = () => {
+    setSeed(Math.random());
+  };
+
+  const downloadImage = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement('a');
+    link.download = `rat_${Date.now()}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">🐀 Générateur de Rats Procédural</h1>
+          <p className="text-gray-300">Chaque rat est unique et généré algorithmiquement</p>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-2xl p-8 mb-6">
+          <canvas 
+            ref={canvasRef} 
+            width={600} 
+            height={400}
+            className="w-full border-2 border-gray-200 rounded"
+          />
+        </div>
+
+        <div className="flex gap-4 justify-center mb-6">
+          <button
+            onClick={regenerate}
+            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition"
+          >
+            <RefreshCw size={20} />
+            Nouveau Rat
+          </button>
+          
+          <button
+            onClick={downloadImage}
+            className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition"
+          >
+            <Download size={20} />
+            Télécharger
+          </button>
+          
+          <button
+            onClick={() => setShowControls(!showControls)}
+            className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold transition"
+          >
+            <Sliders size={20} />
+            Contrôles
+          </button>
+        </div>
+
+        {showControls && (
+          <div className="bg-white rounded-lg shadow-xl p-6 grid grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Taille</label>
+              <select
+                value={config.size}
+                onChange={(e) => setConfig({...config, size: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="small">Petit</option>
+                <option value="medium">Moyen</option>
+                <option value="large">Grand</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pose</label>
+              <select
+                value={config.pose}
+                onChange={(e) => setConfig({...config, pose: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="standing">Debout</option>
+                <option value="sitting">Assis</option>
+                <option value="alert">Alerte</option>
+                <option value="sneaking">Furtif</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Style</label>
+              <select
+                value={config.style}
+                onChange={(e) => setConfig({...config, style: e.target.value})}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="realistic">Réaliste</option>
+                <option value="cartoon">Cartoon</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Accessoires</label>
+              <input
+                type="checkbox"
+                checked={config.accessories}
+                onChange={(e) => setConfig({...config, accessories: e.target.checked})}
+                className="w-5 h-5"
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="bg-gray-800 rounded-lg p-6 mt-6 text-white">
+          <h3 className="font-bold mb-3">Caractéristiques générées :</h3>
+          <ul className="space-y-1 text-sm text-gray-300">
+            <li>✓ Couleur de pelage unique (6 variations)</li>
+            <li>✓ Yeux expressifs (4 couleurs)</li>
+            <li>✓ Morphologie variable (taille, corpulence)</li>
+            <li>✓ Queue incurvée procéduralement</li>
+            <li>✓ Texture de fourrure aléatoire</li>
+            <li>✓ Moustaches asymétriques</li>
+            <li>✓ Accessoires rares (colliers, cicatrices, taches)</li>
+            <li>✓ 4 poses différentes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProceduralRatGenerator;
