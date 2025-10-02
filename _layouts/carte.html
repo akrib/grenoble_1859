@@ -58,4 +58,38 @@ title: Carte complète
         case "plaine": return "#a0d080";
         case "montagne": return "#666666"; 
         case "desert": return "#edc9af"; 
-        case "route": return "
+        case "route": return "#b5651d"; 
+        default: return "#999999"; // gris clair si pas trouvé
+      }
+    }
+
+    async function drawFullMap() {
+      let loaded = 0, missing = 0;
+      const tasks = [];
+
+      for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+          const levelId = `level_${x}_${y}_${z}`;
+          tasks.push(
+            loadYAMLLevel(levelId, x).then(level => {
+              if (level && level.type) {
+                ctx.fillStyle = getBiomeColor(level.type);
+                loaded++;
+              } else {
+                ctx.fillStyle = "#999999"; // manquant
+                missing++;
+              }
+              ctx.fillRect(x - minX, y - minY, 1, 1);
+            })
+          );
+        }
+      }
+
+      await Promise.all(tasks);
+      console.log(`Carte générée: ${loaded} niveaux trouvés, ${missing} manquants.`);
+    }
+
+    drawFullMap();
+  </script>
+</body>
+</html>
