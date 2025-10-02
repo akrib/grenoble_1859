@@ -1,205 +1,187 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Générateur de Rats Procédural</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: linear-gradient(to bottom right, #2d2d2d, #111);
-      color: white;
-      text-align: center;
-      padding: 2rem;
-    }
-    canvas {
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      background: #f5f5f5;
-    }
-    .controls {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    select, input[type=checkbox] {
-      margin-top: 0.5rem;
-      padding: 0.3rem;
-    }
-    .panel {
-      background: white;
-      color: black;
-      padding: 1rem;
-      border-radius: 8px;
-      display: inline-block;
-      margin-top: 1rem;
-      text-align: left;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Générateur de Rat Pixel Art</title>
+<style>
+body {
+  font-family: sans-serif;
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+canvas {
+  border: 2px solid #ccc;
+  image-rendering: pixelated;
+}
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+select, input[type=checkbox] {
+  margin-top: 0.5rem;
+}
+.panel {
+  background: white;
+  color: black;
+  padding: 1rem;
+  border-radius: 8px;
+  display: inline-block;
+  margin-top: 1rem;
+  text-align: left;
+}
+</style>
 </head>
 <body>
 
-  <h1>🐀 Générateur de Rats Procédural</h1>
-  <p>Chaque rat est unique et généré algorithmiquement</p>
+<h1>🐀 Générateur de Rat Pixel Art</h1>
+<canvas id="ratCanvas" width="256" height="256"></canvas>
 
-  <canvas id="ratCanvas" width="600" height="400"></canvas>
+<div class="controls">
+  <button id="newRatBtn">Nouveau Rat</button>
+  <button id="downloadBtn">Télécharger</button>
+  <button id="togglePanelBtn">Contrôles</button>
+</div>
 
-  <div class="controls">
-    <button id="newRatBtn">Nouveau Rat</button>
-    <button id="downloadBtn">Télécharger</button>
-    <button id="togglePanelBtn">Contrôles</button>
-  </div>
+<div id="controlPanel" class="panel" style="display:none;">
+  <label>Taille:
+    <select id="sizeSelect">
+      <option value="small">Petit</option>
+      <option value="medium" selected>Moyen</option>
+      <option value="large">Grand</option>
+    </select>
+  </label><br>
 
-  <div id="controlPanel" class="panel" style="display:none;">
-    <label>Taille:
-      <select id="sizeSelect">
-        <option value="small">Petit</option>
-        <option value="medium" selected>Moyen</option>
-        <option value="large">Grand</option>
-      </select>
-    </label><br>
+  <label>Pose:
+    <select id="poseSelect">
+      <option value="standing" selected>Debout</option>
+      <option value="sitting">Assis</option>
+      <option value="alert">Alerte</option>
+      <option value="sneaking">Furtif</option>
+    </select>
+  </label><br>
 
-    <label>Pose:
-      <select id="poseSelect">
-        <option value="standing" selected>Debout</option>
-        <option value="sitting">Assis</option>
-        <option value="alert">Alerte</option>
-        <option value="sneaking">Furtif</option>
-      </select>
-    </label><br>
-
-    <label>Style:
-      <select id="styleSelect">
-        <option value="realistic" selected>Réaliste</option>
-        <option value="cartoon">Cartoon</option>
-      </select>
-    </label><br>
-
-    <label>Accessoires:
-      <input type="checkbox" id="accessoriesCheckbox" checked>
-    </label>
-  </div>
+  <label>Accessoires:
+    <input type="checkbox" id="accessoriesCheckbox" checked>
+  </label>
+</div>
 
 <script>
 const canvas = document.getElementById('ratCanvas');
 const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false; // pixel art net
 let seed = Math.random();
 
 const config = {
   size: 'medium',
   pose: 'standing',
-  style: 'realistic',
   accessories: true
 };
 
-// --- UTILITAIRES ---
+const PIXEL = 32; // taille de la grille pixel
+
 function seededRandom(seed) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
-function getRandomColor(seed, type) {
-  const rand = seededRandom(seed);
-  if (type === 'body') {
-    const colors = [
-      [120,120,120],[101,67,33],[40,40,40],[220,220,220],[194,178,128],[150,75,0]
-    ];
-    return colors[Math.floor(rand * colors.length)];
-  } else if (type === 'eyes') {
-    const colors = [
-      [255,100,100],[50,50,50],[139,69,19],[255,200,100]
-    ];
-    return colors[Math.floor(rand * colors.length)];
-  }
-}
+// palettes simples
+const bodyColors = [
+  [120,120,120],[101,67,33],[40,40,40],[220,220,220],[194,178,128],[150,75,0]
+];
+const eyeColors = [[0,0,0],[255,100,100],[139,69,19]];
 
-// --- DESSIN ---
+// --- génération d'un rat pixel art ---
 function drawRat() {
-  const width = canvas.width;
-  const height = canvas.height;
-  ctx.clearRect(0,0,width,height);
+  const width = PIXEL;
+  const height = PIXEL;
+  const scale = canvas.width / PIXEL; // pour agrandir
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
   let currentSeed = seed;
-  const nextRand = () => {
-    currentSeed += 1;
-    return seededRandom(currentSeed);
+  const nextRand = () => { currentSeed+=1; return seededRandom(currentSeed); }
+
+  const bodyColor = bodyColors[Math.floor(nextRand()*bodyColors.length)];
+  const eyeColor = eyeColors[Math.floor(nextRand()*eyeColors.length)];
+
+  // "image" du rat en pixels (32x32)
+  const pixels = Array.from({length:PIXEL},()=>Array(PIXEL).fill([0,0,0,0]));
+
+  const centerX = Math.floor(PIXEL/2);
+  const centerY = Math.floor(PIXEL*0.6);
+  const sizeMult = config.size==='small'?0.6:config.size==='large'?1.2:1;
+
+  const bodyW = Math.floor(6*sizeMult);
+  const bodyH = Math.floor(4*sizeMult);
+
+  // corps (rectangle simple)
+  for(let y=-bodyH; y<=bodyH; y++){
+    for(let x=-bodyW; x<=bodyW; x++){
+      let px = centerX+x;
+      let py = centerY+y;
+      if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
+        pixels[py][px] = [...bodyColor,255];
+      }
+    }
   }
 
-  const bodyColor = getRandomColor(currentSeed++, 'body');
-  const eyeColor = getRandomColor(currentSeed++, 'eyes');
-  const sizeMult = config.size === 'small' ? 0.7 : config.size === 'large' ? 1.3 : 1;
+  // tête (rectangle ou carré)
+  const headSize = Math.floor(3*sizeMult);
+  for(let y=-headSize; y<=headSize; y++){
+    for(let x=-headSize; x<=headSize; x++){
+      let px = centerX+bodyW+x;
+      let py = centerY-1+y;
+      if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
+        pixels[py][px] = [...bodyColor,255];
+      }
+    }
+  }
 
-  const baseX = width/2;
-  const baseY = height*0.65;
-
-  let bodyAngle=0, headOffsetY=0, tailCurve=1;
-  if(config.pose==='sitting'){ bodyAngle=0.3; headOffsetY=-10; }
-  else if(config.pose==='alert'){ headOffsetY=-15; tailCurve=1.5; }
-  else if(config.pose==='sneaking'){ bodyAngle=-0.2; headOffsetY=5; }
-
-  ctx.save();
-  ctx.translate(baseX, baseY);
-  ctx.rotate(bodyAngle);
-
-  // Queue
-  ctx.strokeStyle = `rgba(${bodyColor[0]*0.8},${bodyColor[1]*0.8},${bodyColor[2]*0.8},0.9)`;
-  ctx.lineWidth = 4 + nextRand()*3;
-  ctx.lineCap='round';
-  ctx.beginPath();
-  ctx.moveTo(-30*sizeMult,0);
-  ctx.quadraticCurveTo(-30*sizeMult-40*nextRand(), 50*tailCurve*nextRand(), -80*nextRand(), 30*nextRand());
-  ctx.stroke();
-
-  // Corps
-  const bodyWidth = (60 + nextRand()*30)*sizeMult;
-  const bodyHeight = (40 + nextRand()*20)*sizeMult;
-  ctx.fillStyle = `rgb(${bodyColor[0]},${bodyColor[1]},${bodyColor[2]})`;
-  ctx.beginPath();
-  ctx.ellipse(0,0,bodyWidth*0.5,bodyHeight*0.5,0,0,Math.PI*2);
-  ctx.fill();
-
-  // Pattes arrière
-  const legColor = `rgb(${bodyColor[0]*0.7},${bodyColor[1]*0.7},${bodyColor[2]*0.7})`;
+  // yeux
   for(let i=-1;i<=1;i+=2){
-    ctx.fillStyle=legColor;
-    ctx.beginPath();
-    ctx.ellipse(-bodyWidth*0.2*i, bodyHeight*0.4, 8*sizeMult, 15*sizeMult, i*0.3,0,Math.PI*2);
-    ctx.fill();
+    let px = centerX+bodyW+i*2;
+    let py = centerY-1;
+    if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
+      pixels[py][px] = [...eyeColor,255];
+    }
   }
 
-  // Tête
-  const headSize = (30 + nextRand()*10)*sizeMult;
-  ctx.fillStyle = `rgb(${bodyColor[0]},${bodyColor[1]},${bodyColor[2]})`;
-  ctx.beginPath();
-  ctx.ellipse(bodyWidth*0.4,-bodyHeight*0.2+headOffsetY,headSize*0.6,headSize*0.5,0,0,Math.PI*2);
-  ctx.fill();
-
-  // Yeux
-  for(let i=-1;i<=1;i+=2){
-    ctx.fillStyle='white';
-    ctx.beginPath();
-    ctx.arc(bodyWidth*0.38+(i*8),-bodyHeight*0.25+headOffsetY,5,0,Math.PI*2);
-    ctx.fill();
-    ctx.fillStyle=`rgb(${eyeColor[0]},${eyeColor[1]},${eyeColor[2]})`;
-    ctx.beginPath();
-    ctx.arc(bodyWidth*0.38+(i*8),-bodyHeight*0.25+headOffsetY,3,0,Math.PI*2);
-    ctx.fill();
+  // queue
+  for(let i=0;i<5;i++){
+    let px = centerX-bodyW-1-i;
+    let py = centerY;
+    if(px>=0 && px<PIXEL && py>=0 && py<PIXEL){
+      pixels[py][px] = [...bodyColor,255];
+    }
   }
 
-  // Accessoires simples
+  // oreilles
+  pixels[centerY-headSize-1][centerX+bodyW-1] = [...bodyColor,255];
+  pixels[centerY-headSize-1][centerX+bodyW+1] = [...bodyColor,255];
+
+  // accessoires simples
   if(config.accessories && nextRand()>0.5){
-    ctx.strokeStyle='hsl('+nextRand()*360+',70%,50%)';
-    ctx.lineWidth=3;
-    ctx.beginPath();
-    ctx.arc(bodyWidth*0.3,-bodyHeight*0.1,headSize*0.4,0,Math.PI*2);
-    ctx.stroke();
+    let px = centerX;
+    let py = centerY+bodyH-1;
+    pixels[py][px] = [255,0,0,255]; // collier rouge
   }
 
-  ctx.restore();
+  // dessiner les pixels sur le canvas
+  for(let y=0;y<PIXEL;y++){
+    for(let x=0;x<PIXEL;x++){
+      const p = pixels[y][x];
+      if(p[3]===0) continue;
+      ctx.fillStyle = `rgba(${p[0]},${p[1]},${p[2]},${p[3]/255})`;
+      ctx.fillRect(x*scale,y*scale,scale,scale);
+    }
+  }
 }
 
-// --- ACTIONS ---
+// --- actions ---
 function regenerateRat() { seed=Math.random(); drawRat(); }
 function downloadRat() {
   const link = document.createElement('a');
@@ -208,20 +190,18 @@ function downloadRat() {
   link.click();
 }
 
-// --- ÉVÉNEMENTS ---
+// --- événements ---
 document.getElementById('newRatBtn').addEventListener('click', regenerateRat);
 document.getElementById('downloadBtn').addEventListener('click', downloadRat);
 document.getElementById('togglePanelBtn').addEventListener('click', ()=>{
   const panel = document.getElementById('controlPanel');
   panel.style.display = panel.style.display==='none'?'block':'none';
 });
-
 document.getElementById('sizeSelect').addEventListener('change', e=>{ config.size=e.target.value; drawRat(); });
 document.getElementById('poseSelect').addEventListener('change', e=>{ config.pose=e.target.value; drawRat(); });
-document.getElementById('styleSelect').addEventListener('change', e=>{ config.style=e.target.value; drawRat(); });
 document.getElementById('accessoriesCheckbox').addEventListener('change', e=>{ config.accessories=e.target.checked; drawRat(); });
 
-// Premier dessin
+// premier dessin
 drawRat();
 </script>
 
