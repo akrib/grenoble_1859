@@ -19,77 +19,71 @@ title: Carte complète
   <p>Chaque pixel représente un niveau</p>
 
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
-  <script>
-    const BASE_URL = "{{ site.baseurl }}"; // ex: /grenoble_1859
+<script>
+const BASE_URL = "{{ site.baseurl }}";
 
-    const minX = -50, maxX = 50;
-    const minY = -50, maxY = 50;
-    const z = 0; // niveau z à afficher
+const minX = -50, maxX = 50;
+const minY = -50, maxY = 50;
+const z = 0;
 
-    const canvas = document.getElementById("full-map");
-    const width = maxX - minX + 1;
-    const height = maxY - minY + 1;
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("full-map");
+const width = maxX - minX + 1;
+const height = maxY - minY + 1;
+canvas.width = width;
+canvas.height = height;
+const ctx = canvas.getContext("2d");
 
-    function getLevelDir(x) {
-      return `${BASE_URL}/assets/levels/x_${x}`;
+function getBiomeColor(type) {
+  switch(type) {
+    case "ville": return "#888888";
+    case "foret": return "#008000";
+    case "eau": return "#0000ff";
+    case "plaine": return "#a0d080";
+    case "montagne": return "#aaaaaa";
+    case "desert": return "#edc9af";
+    case "route": return "#b5651d";
+    default: return "#333333"; // inconnu
+  }
+}
+
+async function loadYAMLLevel(x, y, z) {
+  const levelId = `level_${x}_${y}_${z}`;
+  const url = `${BASE_URL}/assets/levels/x_${x}/${levelId}.yml`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const text = await res.text();
+    return jsyaml.load(text);
+  } catch {
+    return null;
+  }
+}
+
+async function drawFullMap() {
+  const tasks = [];
+
+  for (let x = minX; x <= maxX; x++) {
+    for (let y = minY; y <= maxY; y++) {
+      tasks.push({x,y});
     }
+  }
 
-    async function loadYAMLLevel(levelId, x) {
-      const dir = getLevelDir(x);
-      const url = `${dir}/${levelId}.yml`;
-      try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        const text = await res.text();
-        return jsyaml.load(text);
-      } catch (e) {
-        return null;
-      }
-    }
+  // Traite les fetchs par paquets (50 à la fois)
+  const batchSize = 50;
+  for (let i = 0; i < tasks.length; i += batchSize) {
+    const batch = tasks.slice(i, i+batchSize).map(async ({x,y}) => {
+      const level = await loadYAMLLevel(x,y,z);
+      const color = level && level.type ? getBiomeColor(level.type) : "#333";
+      ctx.fillStyle = color;
+      ctx.fillRect(x - minX, y - minY, 1, 1);
+    });
+    await Promise.all(batch); // attend la fin du lot avant de continuer
+  }
 
-    function getBiomeColor(type) {
-      switch(type) {
-        case "ville": return "#888888";
-        case "foret": return "#008000";
-        case "eau": return "#0000ff";
-        case "plaine": return "#a0d080";
-        case "montagne": return "#666666"; 
-        case "desert": return "#edc9af"; 
-        case "route": return "#b5651d"; 
-        default: return "#999999"; // gris clair si pas trouvé
-      }
-    }
+  console.log("Carte complète générée !");
+}
 
-    async function drawFullMap() {
-      let loaded = 0, missing = 0;
-      const tasks = [];
-
-      for (let x = minX; x <= maxX; x++) {
-        for (let y = minY; y <= maxY; y++) {
-          const levelId = `level_${x}_${y}_${z}`;
-          tasks.push(
-            loadYAMLLevel(levelId, x).then(level => {
-              if (level && level.type) {
-                ctx.fillStyle = getBiomeColor(level.type);
-                loaded++;
-              } else {
-                ctx.fillStyle = "#999999"; // manquant
-                missing++;
-              }
-              ctx.fillRect(x - minX, y - minY, 1, 1);
-            })
-          );
-        }
-      }
-
-      await Promise.all(tasks);
-      console.log(`Carte générée: ${loaded} niveaux trouvés, ${missing} manquants.`);
-    }
-
-    drawFullMap();
-  </script>
+drawFullMap();
+</script
 </body>
 </html>
