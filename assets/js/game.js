@@ -87,10 +87,17 @@ async function loadSurroundingLevels(char) {
 // ----------------------
 // Navigation et déplacements
 // ----------------------
-const directionsMap = {
-  n:  [0,-1, 0], ne: [1,-1,0], e: [1,0,0], se: [1,1,0],
-  s:  [0,1,0], sw: [-1,1,0], w: [-1,0,0], nw: [-1,-1,0],
-  up: [0,0,1], down:[0,0,-1]
+const directionVectors = {
+  n:  [0, 1, 0],
+  ne: [1, 1, 0],
+  e:  [1, 0, 0],
+  se: [1,-1, 0],
+  s:  [0,-1, 0],
+  sw: [-1,-1,0],
+  w:  [-1,0, 0],
+  nw: [-1,1, 0],
+  up: [0,0, 1],
+  down:[0,0,-1]
 };
 
 async function renderLevel(char) {
@@ -109,7 +116,7 @@ async function renderLevel(char) {
     descEl.textContent = "Il n'y a rien ici...";
   }
 
-  // Navigation : activer/désactiver les boutons existants
+  // Met à jour navigation
   const directions = ["n","ne","e","se","s","sw","w","nw","up","down"];
   directions.forEach(dir => {
     const btn = document.querySelector(`.nav-btn[data-dir="${dir}"]`);
@@ -118,14 +125,13 @@ async function renderLevel(char) {
     if (level && level.exits && level.exits[dir]) {
       btn.disabled = false;
       btn.onclick = async () => {
-        const [dx, dy, dz] = directionsMap[dir];
+        const [dx, dy, dz] = directionVectors[dir];
         char.position.x += dx;
         char.position.y += dy;
         char.position.z += dz;
         saveCharacter(char);
         updateCharacterSheet(char);
-        await renderLevel(char);
-        await drawMinimap(char, levels);
+        await renderLevel(char); // drawMinimap sera appelé à la fin
       };
     } else {
       btn.disabled = true;
@@ -133,7 +139,7 @@ async function renderLevel(char) {
     }
   });
 
-  // Dessin de la mini-map
+  // Met à jour la minimap après que tous les niveaux soient chargés
   await drawMinimap(char, levels);
 }
 
@@ -144,37 +150,39 @@ async function drawMinimap(player, surroundingLevels) {
   const canvas = document.getElementById("map-canvas");
   const ctx = canvas.getContext("2d");
   const size = 20;
-  const halfMap = 1;
+  const halfMap = 1; // rayon de 1 → 3x3
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let dy = -1; dy <= 1; dy++) {
     for (let dx = -1; dx <= 1; dx++) {
-      const x = player.position.x + dx;
-      const y = player.position.y + dy;
-      const z = player.position.z;
-      const levelId = `level_${x}_${y}_${z}`;
+      const levelX = player.position.x + dx;
+      const levelY = player.position.y + dy;
+      const levelZ = player.position.z;
+      const levelId = `level_${levelX}_${levelY}_${levelZ}`;
       const level = surroundingLevels[levelId];
 
       const px = (dx + halfMap) * size;
       const py = (halfMap - dy) * size; // inversion Y
 
-      // Biome
+      // Couleur de fond selon type
       if (level && level.type) {
         switch(level.type) {
           case "ville": ctx.fillStyle = "grey"; break;
           case "foret": ctx.fillStyle = "green"; break;
-          case "eau": ctx.fillStyle = "blue"; break;
-          case "plaine": ctx.fillStyle = "#a0d080"; break;
-          default: ctx.fillStyle = "#a0d080";
+          case "eau":   ctx.fillStyle = "blue"; break;
+          case "plaine":
+          default:      ctx.fillStyle = "#a0d080";
         }
-      } else ctx.fillStyle = "#333";
+      } else {
+        ctx.fillStyle = "#333";
+      }
 
       ctx.fillRect(px, py, size, size);
       ctx.strokeStyle = "#000";
       ctx.strokeRect(px, py, size, size);
 
-      // Joueur au centre
+      // Joueur
       if (dx === 0 && dy === 0) {
         ctx.fillStyle = "yellow";
         ctx.fillRect(px+4, py+4, size-8, size-8);
@@ -183,18 +191,18 @@ async function drawMinimap(player, surroundingLevels) {
           if (level.exits.up) {
             ctx.fillStyle = "white";
             ctx.beginPath();
-            ctx.moveTo(px+size/2, py+3);
-            ctx.lineTo(px+size/2-3, py+10);
-            ctx.lineTo(px+size/2+3, py+10);
+            ctx.moveTo(px + size/2, py + 3);
+            ctx.lineTo(px + size/2 - 3, py + 10);
+            ctx.lineTo(px + size/2 + 3, py + 10);
             ctx.closePath();
             ctx.fill();
           }
           if (level.exits.down) {
             ctx.fillStyle = "white";
             ctx.beginPath();
-            ctx.moveTo(px+size/2, py+size-3);
-            ctx.lineTo(px+size/2-3, py+size-10);
-            ctx.lineTo(px+size/2+3, py+size-10);
+            ctx.moveTo(px + size/2, py + size - 3);
+            ctx.lineTo(px + size/2 - 3, py + size - 10);
+            ctx.lineTo(px + size/2 + 3, py + size - 10);
             ctx.closePath();
             ctx.fill();
           }
