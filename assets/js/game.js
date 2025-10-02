@@ -147,65 +147,82 @@ async function renderLevel(char) {
 // ----------------------
 // Mini-map
 // ----------------------
-async function drawMinimap(char) {
-  const surrounding = await loadSurroundingLevels(char);
-
+async function drawMinimap(player, surroundingLevels) {
   const canvas = document.getElementById("map-canvas");
-  if (!canvas) return;
   const ctx = canvas.getContext("2d");
+  const size = 20; // taille d'une case
+  const halfMap = 1; // pour une mini-map 3x3 centrée sur le joueur
 
-  const size = 20;
-  const half = 1; // 3x3 mini-map
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  for (let dy=-half; dy<=half; dy++) {
-    for (let dx=-half; dx<=half; dx++) {
-      const levelId = `level_${char.position.x+dx}_${char.position.y+dy}_${char.position.z}`;
-      const level = surrounding[levelId];
+  // Boucle sur les 3x3 cases autour du joueur
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      const levelX = player.position.x + dx;
+      const levelY = player.position.y + dy;
+      const levelZ = player.position.z;
 
-      let color = "#000";
-      if (level) {
+      const levelId = `level_${levelX}_${levelY}_${levelZ}`;
+      const level = surroundingLevels[levelId];
+
+      const px = (dx + halfMap) * size;
+      const py = (halfMap - dy) * size; // <- inversion Y
+
+      // Fond selon biome
+      if (level && level.type) {
         switch(level.type) {
-          case "ville": color="gray"; break;
-          case "foret": color="green"; break;
-          case "eau": color="blue"; break;
-          case "plaine": color="#7cfc00"; break;
+          case "ville":
+            ctx.fillStyle = "grey";
+            break;
+          case "foret":
+            ctx.fillStyle = "green";
+            break;
+          case "eau":
+            ctx.fillStyle = "blue";
+            break;
+          case "plaine":
+          default:
+            ctx.fillStyle = "#a0d080";
         }
+      } else {
+        ctx.fillStyle = "#333"; // level inconnu
       }
 
-      const px = (dx + half)*size;
-      const py = (dy + half)*size;
-      ctx.fillStyle = color;
       ctx.fillRect(px, py, size, size);
+      ctx.strokeStyle = "#000";
+      ctx.strokeRect(px, py, size, size);
 
       // Joueur au centre
-      if (dx===0 && dy===0) {
-        ctx.fillStyle="yellow";
+      if (dx === 0 && dy === 0) {
+        ctx.fillStyle = "yellow";
         ctx.fillRect(px+4, py+4, size-8, size-8);
 
-        if (level.exits && level.exits.up) {
-          ctx.fillStyle="white";
-          ctx.beginPath();
-          ctx.moveTo(px+size/2, py+5);
-          ctx.lineTo(px+size/2-3, py+10);
-          ctx.lineTo(px+size/2+3, py+10);
-          ctx.closePath();
-          ctx.fill();
-        }
-        if (level.exits && level.exits.down) {
-          ctx.fillStyle="white";
-          ctx.beginPath();
-          ctx.moveTo(px+size/2, py+size-5);
-          ctx.lineTo(px+size/2-3, py+size-10);
-          ctx.lineTo(px+size/2+3, py+size-10);
-          ctx.closePath();
-          ctx.fill();
+        if (level && level.exits) {
+          // flèche up
+          if (level.exits.up) {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.moveTo(px + size/2, py + 3);
+            ctx.lineTo(px + size/2 - 3, py + 10);
+            ctx.lineTo(px + size/2 + 3, py + 10);
+            ctx.closePath();
+            ctx.fill();
+          }
+          // flèche down
+          if (level.exits.down) {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.moveTo(px + size/2, py + size - 3);
+            ctx.lineTo(px + size/2 - 3, py + size - 10);
+            ctx.lineTo(px + size/2 + 3, py + size - 10);
+            ctx.closePath();
+            ctx.fill();
+          }
         }
       }
     }
   }
 }
-
 // ----------------------
 // Initialisation
 // ----------------------
