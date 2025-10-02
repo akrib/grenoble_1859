@@ -8,10 +8,36 @@ function loadCharacter() {
       name: "Aventurier",
       level: 1,
       xp: 0,
-      hp: 20,
       gold: 0,
       inventory: [],
-      position: { x: 0, y: 0, z: 0 }
+
+      // --- Caractéristiques (bonus appliqués aux jets)
+      stats: {
+        force: 1,
+        dex: 1,
+        con: 0,
+        int: 0,
+        sag: 0,
+        cha: 0
+      },
+
+      // --- Compétences clés (COC)
+      skills: {
+        corpsACorps: 2,
+        distance: 1,
+        magie: 0,
+        discretion: 1,
+        perception: 1
+      },
+
+      // --- Combat
+      hpMax: 20,
+      hp: 20,
+      defense: 12,      // DEF = 10 + Dex + bonus armure
+      initiative: 1,    // mod Dex
+      attackBonus: 3,   // mod Force + progression
+      damageDice: "1d8",
+      damageBonus: 1
     };
     localStorage.setItem("character", JSON.stringify(char));
   } else {
@@ -20,6 +46,7 @@ function loadCharacter() {
   return char;
 }
 
+
 function saveCharacter(char) {
   localStorage.setItem("character", JSON.stringify(char));
 }
@@ -27,16 +54,42 @@ function saveCharacter(char) {
 function updateCharacterSheet(char) {
   const el = document.getElementById("character-sheet");
   if (!el) return;
+
   el.innerHTML = `
     <h2>${char.name}</h2>
-    <p>HP: ${char.hp}</p>
-    <p>XP: ${char.xp}</p>
-    <p>Or: ${char.gold}</p>
-    <p>Niveau: ${char.level}</p>
-    <p>Position: (${char.position.x}, ${char.position.y}, ${char.position.z})</p>
-    <p>Inventaire: ${char.inventory.join(", ") || "Vide"}</p>
+    <p><strong>Niveau:</strong> ${char.level} (${char.xp} XP)</p>
+    <p><strong>Or:</strong> ${char.gold}</p>
+    <p><strong>PV:</strong> ${char.hp}/${char.hpMax}</p>
+    <p><strong>Défense:</strong> ${char.defense}</p>
+    <p><strong>Initiative:</strong> +${char.initiative}</p>
+    <p><strong>Attaque:</strong> +${char.attackBonus} (${char.damageDice}+${char.damageBonus})</p>
+    
+    <h3>Caractéristiques</h3>
+    <ul>
+      <li>Force: ${char.stats.force}</li>
+      <li>Dextérité: ${char.stats.dex}</li>
+      <li>Constitution: ${char.stats.con}</li>
+      <li>Intelligence: ${char.stats.int}</li>
+      <li>Sagesse: ${char.stats.sag}</li>
+      <li>Charisme: ${char.stats.cha}</li>
+    </ul>
+
+    <h3>Compétences</h3>
+    <ul>
+      <li>Corps-à-corps: +${char.skills.corpsACorps}</li>
+      <li>Distance: +${char.skills.distance}</li>
+      <li>Magie: +${char.skills.magie}</li>
+      <li>Discrétion: +${char.skills.discretion}</li>
+      <li>Perception: +${char.skills.perception}</li>
+    </ul>
+
+    <h3>Inventaire</h3>
+    <p>${char.inventory.join(", ") || "Vide"}</p>
+    
+    <p><em>Position: (${char.position.x}, ${char.position.y}, ${char.position.z})</em></p>
   `;
 }
+
 
 // ----------------------
 // Gestion des niveaux
@@ -148,6 +201,11 @@ async function renderLevel(char) {
   });
 
   await drawMinimap(char, levels);
+
+if (level && level.type) {
+  maybeTriggerEncounter(level.type, char);
+}
+  
 }
 
 // ----------------------
