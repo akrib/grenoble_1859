@@ -2,64 +2,102 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Rat Pixelart 64x64</title>
+  <title>Rat Pixel Art 64x64</title>
   <style>
-    body { background: #222; color: #eee; text-align: center; font-family: monospace; }
-    canvas { image-rendering: pixelated; border: 1px solid #444; margin-top: 20px; }
+    body { background: #222; color: #eee; text-align: center; font-family: sans-serif; }
+    canvas { image-rendering: pixelated; border: 2px solid #444; margin-top: 20px; }
     button { margin: 10px; padding: 8px; font-size: 16px; }
   </style>
 </head>
 <body>
-  <h1>🐀 Générateur de Rat Pixelart</h1>
-  <button onclick="generateRat()">Générer</button>
-  <canvas id="ratCanvas" width="64" height="64"></canvas>
+  <h1>🐀 Générateur de Rat Pixel Art</h1>
+  <button onclick="generateRat()">Nouveau Rat</button>
+  <canvas id="ratCanvas" width="512" height="512"></canvas>
 
   <script>
+    const canvas = document.getElementById('ratCanvas');
+    const ctx = canvas.getContext('2d');
+    const PIXEL = 64;
+    const SCALE = canvas.width / PIXEL;
+
     function generateRat() {
-      const canvas = document.getElementById('ratCanvas');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, 64, 64);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const pixels = Array.from({ length: PIXEL }, () => Array(PIXEL).fill([0, 0, 0, 0]));
 
       // Couleurs
-      const bodyColor = `rgb(${100 + Math.random()*50}, ${100 + Math.random()*50}, ${100 + Math.random()*50})`;
-      const earColor = "#cc9999";
-      const eyeColor = "#000";
-      const tailColor = "#cc8888";
+      const body = [120, 120, 120, 255];
+      const outline = [40, 40, 40, 255];
+      const tail = [200, 120, 120, 255];
+      const eye = [0, 0, 0, 255];
+      const nose = [255, 100, 100, 255];
+      const foot = [180, 120, 120, 255];
 
-      // Corps
-      ctx.fillStyle = bodyColor;
-      ctx.fillRect(20, 28, 24, 16); // corps
-
-      // Tête
-      ctx.fillRect(42, 24, 12, 12); // tête
-
-      // Oreilles
-      ctx.fillStyle = earColor;
-      ctx.fillRect(43, 22, 4, 4); // oreille gauche
-      ctx.fillRect(49, 22, 4, 4); // oreille droite
-
-      // Yeux
-      ctx.fillStyle = eyeColor;
-      ctx.fillRect(45, 27, 2, 2);
-      ctx.fillRect(51, 27, 2, 2);
-
-      // Nez
-      ctx.fillStyle = "#ff6666";
-      ctx.fillRect(48, 34, 2, 2);
-
-      // Queue
-      ctx.fillStyle = tailColor;
-      for (let i = 0; i < 6; i++) {
-        ctx.fillRect(18 - i, 36 + (i % 2), 1, 1);
+      // Corps (ovale horizontal)
+      for (let y = -10; y <= 10; y++) {
+        for (let x = -20; x <= 20; x++) {
+          const dx = x / 20, dy = y / 10;
+          if (dx * dx + dy * dy <= 1) {
+            const px = 28 + x;
+            const py = 32 + y;
+            if (px >= 0 && px < PIXEL && py >= 0 && py < PIXEL) {
+              pixels[py][px] = body;
+            }
+          }
+        }
       }
 
+      // Tête (ovale plus petit)
+      for (let y = -6; y <= 6; y++) {
+        for (let x = -8; x <= 8; x++) {
+          const dx = x / 8, dy = y / 6;
+          if (dx * dx + dy * dy <= 1) {
+            const px = 48 + x;
+            const py = 28 + y;
+            if (px >= 0 && px < PIXEL && py >= 0 && py < PIXEL) {
+              pixels[py][px] = body;
+            }
+          }
+        }
+      }
+
+      // Oreilles
+      pixels[20][44] = tail;
+      pixels[20][52] = tail;
+
+      // Yeux
+      pixels[26][46] = eye;
+      pixels[26][50] = eye;
+
+      // Nez
+      pixels[34][48] = nose;
+
       // Pattes
-      ctx.fillStyle = "#333";
-      ctx.fillRect(24, 44, 2, 2);
-      ctx.fillRect(38, 44, 2, 2);
+      pixels[44][30] = foot;
+      pixels[44][36] = foot;
+      pixels[44][40] = foot;
+      pixels[44][46] = foot;
+
+      // Queue (courbe)
+      for (let i = 0; i < 12; i++) {
+        const px = 16 - i;
+        const py = 32 + Math.floor(Math.sin(i / 2) * 4);
+        if (px >= 0 && px < PIXEL && py >= 0 && py < PIXEL) {
+          pixels[py][px] = tail;
+        }
+      }
+
+      // Dessin final
+      for (let y = 0; y < PIXEL; y++) {
+        for (let x = 0; x < PIXEL; x++) {
+          const p = pixels[y][x];
+          if (p[3] === 0) continue;
+          ctx.fillStyle = `rgba(${p[0]},${p[1]},${p[2]},${p[3]/255})`;
+          ctx.fillRect(x * SCALE, y * SCALE, SCALE, SCALE);
+        }
+      }
     }
 
-    generateRat(); // Génère au chargement
+    generateRat();
   </script>
 </body>
 </html>
