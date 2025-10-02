@@ -126,9 +126,13 @@ layout: null
   <!-- Script du jeu -->
   <script src="{{ site.baseurl }}/assets/js/game.js"></script>
 
+<!-- Script du combat -->
+  <script src="{{ site.baseurl }}/assets/js/combat.js"></script>
+
+  <!-- Injection possible de variables YAML du level si nécessaire -->
   <script>
     window.levelData = {{ page | jsonify }};
-    const BASE_URL = "{{ site.baseurl }}";
+    const BASE_URL = "{{ site.baseurl }}"; // /grenoble_1859
   </script>
 
 </body>
