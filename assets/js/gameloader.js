@@ -4,8 +4,10 @@ import { drawMinimap } from './minimap.js';
 import { directions } from './move.js';
 import { maybeTriggerEncounter } from './encounter.js';
 
+const BASE_URL="https://github.com/akrib/grenoble_1859"
+
 async function loadYAMLLevel(levelId, x) {
-  const url = `/assets/levels/x_${x}/${levelId}.yml`;
+  const url = `${BASE_URL}/assets/levels/x_${x}/${levelId}.yml`;
   try {
     const res = await fetch(url);
     if(!res.ok) return null;
