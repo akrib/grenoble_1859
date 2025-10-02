@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bataille des Îles Flottantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        #gameTitle {
+            font-size: 2.5em;
+            margin: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 900px;
+            height: 600px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        #towerMenu {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .tower-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid #fff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .tower-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .tower-btn.selected {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        .tower-btn small {
+            display: block;
+            font-size: 0.7em;
+            margin-top: 5px;
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 20;
+        }
+
+        #gameOver h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        #restartBtn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #restartBtn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="gameTitle">⚔️ Bataille des Îles Flottantes ⚔️</h1>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="900" height="600"></canvas>
+        
+        <div id="ui">
+            <div>💰 Or: <span id="gold">100</span></div>
+            <div>❤️ Votre Île: <span id="playerHealth">100</span>%</div>
+            <div>💀 Île Ennemie: <span id="enemyHealth">100</span>%</div>
+        </div>
+
+        <div id="towerMenu">
+            <button class="tower-btn" data-type="cannon">
+                🎯 Canon<br><small>20 Or | DPS: 5</small>
+            </button>
+            <button class="tower-btn" data-type="laser">
+                ⚡ Laser<br><small>40 Or | DPS: 12</small>
+            </button>
+            <button class="tower-btn" data-type="missile">
+                🚀 Missile<br><small>60 Or | DPS: 20</small>
+            </button>
+            <button class="tower-btn" data-type="sniper">
+                🎯 Sniper<br><small>80 Or | DPS: 35</small>
+            </button>
+        </div>
+
+        <div id="gameOver">
+            <h2 id="resultText"></h2>
+            <p id="resultDesc"></p>
+            <button id="restartBtn">Rejouer</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const GRID_SIZE = 5;
+        const CELL_SIZE = 50;
+        const COLLISION_DAMAGE = 0.5;
+
+        const TOWER_TYPES = {
+            cannon: { cost: 20, damage: 5, color: '#ff6b6b', emoji: '🎯', range: 150 },
+            laser: { cost: 40, damage: 12, color: '#4ecdc4', emoji: '⚡', range: 200 },
+            missile: { cost: 60, damage: 20, color: '#ff9f43', emoji: '🚀', range: 250 },
+            sniper: { cost: 80, damage: 35, color: '#a29bfe', emoji: '🎯', range: 300 }
+        };
+
+        let game = {
+            gold: 100,
+            selectedTower: null,
+            playerIsland: null,
+            enemyIsland: null,
+            gameRunning: true,
+            particles: []
+        };
+
+        class Island {
+            constructor(x, y, isPlayer = true) {
+                this.x = x;
+                this.y = y;
+                this.health = 100;
+                this.speed = 0.3;
+                this.isPlayer = isPlayer;
+                this.grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
+                this.destroyed = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+                this.gridHealth = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(20));
+            }
+
+            draw() {
+                const startX = this.x - (GRID_SIZE * CELL_SIZE) / 2;
+                const startY = this.y - (GRID_SIZE * CELL_SIZE) / 2;
+
+                // Propulseur
+                ctx.fillStyle = this.isPlayer ? '#ff6b6b' : '#6c5ce7';
+                const thrusterX = this.isPlayer ? startX - 30 : startX + GRID_SIZE * CELL_SIZE + 10;
+                ctx.fillRect(thrusterX, startY + 50, 20, 150);
+                
+                // Flammes du propulseur
+                ctx.fillStyle = this.isPlayer ? '#ffd93d' : '#fdcb6e';
+                const flameX = this.isPlayer ? thrusterX - 15 : thrusterX + 20;
+                ctx.fillRect(flameX, startY + 70 + Math.random() * 10, 15, 100);
+
+                // Grille de l'île
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    for (let col = 0; col < GRID_SIZE; col++) {
+                        const cellX = startX + col * CELL_SIZE;
+                        const cellY = startY + row * CELL_SIZE;
+
+                        if (this.destroyed[row][col]) {
+                            ctx.fillStyle = '#2d3436';
+                            ctx.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+                            continue;
+                        }
+
+                        // Case de l'île
+                        const healthPercent = this.gridHealth[row][col] / 20;
+                        ctx.fillStyle = this.isPlayer ? 
+                            `rgba(52, 152, 219, ${0.5 + healthPercent * 0.5})` : 
+                            `rgba(192, 57, 43, ${0.5 + healthPercent * 0.5})`;
+                        ctx.fillRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+                        ctx.strokeStyle = '#34495e';
+                        ctx.strokeRect(cellX, cellY, CELL_SIZE, CELL_SIZE);
+
+                        // Tour
+                        if (this.grid[row][col]) {
+                            const tower = this.grid[row][col];
+                            ctx.fillStyle = TOWER_TYPES[tower.type].color;
+                            ctx.fillRect(cellX + 5, cellY + 5, CELL_SIZE - 10, CELL_SIZE - 10);
+                            ctx.font = '30px Arial';
+                            ctx.fillText(TOWER_TYPES[tower.type].emoji, cellX + 10, cellY + 38);
+                        }
+                    }
+                }
+            }
+
+            move() {
+                if (this.isPlayer) {
+                    this.x += this.speed;
+                } else {
+                    this.x -= this.speed;
+                }
+            }
+
+            takeDamage(amount) {
+                this.health = Math.max(0, this.health - amount);
+            }
+
+            damageCell(row, col, amount) {
+                if (!this.destroyed[row][col]) {
+                    this.gridHealth[row][col] -= amount;
+                    if (this.gridHealth[row][col] <= 0) {
+                        this.destroyed[row][col] = true;
+                        if (this.grid[row][col]) {
+                            this.explodeTower(row, col);
+                            this.grid[row][col] = null;
+                        }
+                        this.takeDamage(4);
+                    }
+                }
+            }
+
+            explodeTower(row, col) {
+                const startX = this.x - (GRID_SIZE * CELL_SIZE) / 2;
+                const startY = this.y - (GRID_SIZE * CELL_SIZE) / 2;
+                const cellX = startX + col * CELL_SIZE + CELL_SIZE / 2;
+                const cellY = startY + row * CELL_SIZE + CELL_SIZE / 2;
+                
+                for (let i = 0; i < 20; i++) {
+                    game.particles.push({
+                        x: cellX,
+                        y: cellY,
+                        vx: (Math.random() - 0.5) * 5,
+                        vy: (Math.random() - 0.5) * 5,
+                        life: 60,
+                        color: '#ff6b6b'
+                    });
+                }
+            }
+
+            placeTower(row, col, type) {
+                if (!this.destroyed[row][col] && !this.grid[row][col]) {
+                    this.grid[row][col] = { type, cooldown: 0 };
+                    return true;
+                }
+                return false;
+            }
+
+            attack(target) {
+                for (let row = 0; row < GRID_SIZE; row++) {
+                    for (let col = 0; col < GRID_SIZE; col++) {
+                        if (this.grid[row][col] && !this.destroyed[row][col]) {
+                            const tower = this.grid[row][col];
+                            if (tower.cooldown <= 0) {
+                                const damage = TOWER_TYPES[tower.type].damage;
+                                const targetRow = Math.floor(Math.random() * GRID_SIZE);
+                                const targetCol = Math.floor(Math.random() * GRID_SIZE);
+                                
+                                target.damageCell(targetRow, targetCol, damage / 60);
+                                
+                                this.shootProjectile(row, col, target, targetRow, targetCol);
+                                tower.cooldown = 60;
+                            } else {
+                                tower.cooldown--;
+                            }
+                        }
+                    }
+                }
+            }
+
+            shootProjectile(fromRow, fromCol, target, toRow, toCol) {
+                const startX = this.x - (GRID_SIZE * CELL_SIZE) / 2 + fromCol * CELL_SIZE + CELL_SIZE / 2;
+                const startY = this.y - (GRID_SIZE * CELL_SIZE) / 2 + fromRow * CELL_SIZE + CELL_SIZE / 2;
+                const endX = target.x - (GRID_SIZE * CELL_SIZE) / 2 + toCol * CELL_SIZE + CELL_SIZE / 2;
+                const endY = target.y - (GRID_SIZE * CELL_SIZE) / 2 + toRow * CELL_SIZE + CELL_SIZE / 2;
+
+                game.particles.push({
+                    x: startX,
+                    y: startY,
+                    targetX: endX,
+                    targetY: endY,
+                    life: 30,
+                    isProjectile: true,
+                    color: TOWER_TYPES[this.grid[fromRow][fromCol].type].color
+                });
+            }
+        }
+
+        function init() {
+            game.gold = 100;
+            game.selectedTower = null;
+            game.gameRunning = true;
+            game.particles = [];
+            game.playerIsland = new Island(200, canvas.height / 2, true);
+            game.enemyIsland = new Island(700, canvas.height / 2, false);
+            
+            // Tours ennemies aléatoires
+            for (let i = 0; i < 5; i++) {
+                const row = Math.floor(Math.random() * GRID_SIZE);
+                const col = Math.floor(Math.random() * GRID_SIZE);
+                const types = Object.keys(TOWER_TYPES);
+                const type = types[Math.floor(Math.random() * types.length)];
+                game.enemyIsland.placeTower(row, col, type);
+            }
+
+            document.getElementById('gameOver').style.display = 'none';
+        }
+
+        function update() {
+            if (!game.gameRunning) return;
+
+            game.playerIsland.move();
+            game.enemyIsland.move();
+
+            // Attaques
+            game.playerIsland.attack(game.enemyIsland);
+            game.enemyIsland.attack(game.playerIsland);
+
+            // Collision
+            const distance = Math.abs(game.playerIsland.x - game.enemyIsland.x);
+            if (distance < GRID_SIZE * CELL_SIZE) {
+                game.playerIsland.takeDamage(COLLISION_DAMAGE);
+                game.enemyIsland.takeDamage(COLLISION_DAMAGE);
+            }
+
+            // Particules
+            game.particles = game.particles.filter(p => {
+                p.life--;
+                if (p.isProjectile) {
+                    const dx = p.targetX - p.x;
+                    const dy = p.targetY - p.y;
+                    p.x += dx / p.life;
+                    p.y += dy / p.life;
+                } else {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.1;
+                }
+                return p.life > 0;
+            });
+
+            // Or passif
+            if (Math.random() < 0.02) {
+                game.gold += 5;
+            }
+
+            // Fin de partie
+            if (game.playerIsland.health <= 0 || game.enemyIsland.health <= 0) {
+                endGame();
+            }
+
+            updateUI();
+        }
+
+        function draw() {
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Nuages de fond
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.arc(100 + i * 200, 100 + i * 50, 30, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            game.enemyIsland.draw();
+            game.playerIsland.draw();
+
+            // Particules
+            game.particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.isProjectile ? 5 : 3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function updateUI() {
+            document.getElementById('gold').textContent = Math.floor(game.gold);
+            document.getElementById('playerHealth').textContent = Math.floor(game.playerIsland.health);
+            document.getElementById('enemyHealth').textContent = Math.floor(game.enemyIsland.health);
+        }
+
+        function endGame() {
+            game.gameRunning = false;
+            const gameOverDiv = document.getElementById('gameOver');
+            const resultText = document.getElementById('resultText');
+            const resultDesc = document.getElementById('resultDesc');
+
+            if (game.playerIsland.health <= 0 && game.enemyIsland.health <= 0) {
+                resultText.textContent = '💥 Match Nul !';
+                resultDesc.textContent = 'Les deux îles ont été détruites simultanément !';
+            } else if (game.playerIsland.health > game.enemyIsland.health) {
+                resultText.textContent = '🎉 Victoire !';
+                resultDesc.textContent = 'Vous avez détruit l\'île ennemie !';
+            } else {
+                resultText.textContent = '💀 Défaite !';
+                resultDesc.textContent = 'Votre île a été détruite...';
+            }
+
+            gameOverDiv.style.display = 'block';
+        }
+
+        canvas.addEventListener('click', (e) => {
+            if (!game.selectedTower || !game.gameRunning) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const startX = game.playerIsland.x - (GRID_SIZE * CELL_SIZE) / 2;
+            const startY = game.playerIsland.y - (GRID_SIZE * CELL_SIZE) / 2;
+
+            if (x >= startX && x < startX + GRID_SIZE * CELL_SIZE &&
+                y >= startY && y < startY + GRID_SIZE * CELL_SIZE) {
+                
+                const col = Math.floor((x - startX) / CELL_SIZE);
+                const row = Math.floor((y - startY) / CELL_SIZE);
+
+                const cost = TOWER_TYPES[game.selectedTower].cost;
+                if (game.gold >= cost) {
+                    if (game.playerIsland.placeTower(row, col, game.selectedTower)) {
+                        game.gold -= cost;
+                        updateUI();
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.tower-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                game.selectedTower = btn.dataset.type;
+            });
+        });
+
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            init();
+        });
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        init();
+        gameLoop();
+    </script>
+</body>
+</html>
