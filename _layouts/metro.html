@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mini Metroidvania</title>
+<style>
+  body { margin: 0; overflow: hidden; background: #111; }
+  canvas { display: block; margin: 0 auto; background: #222; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+canvas.width = 800;
+canvas.height = 450;
+
+// --- Variables de joueur ---
+const player = {
+    x: 50, y: 350, width: 20, height: 20,
+    vx: 0, vy: 0, speed: 2, jumpPower: 6, onGround: false
+};
+
+// --- Contrôles ---
+const keys = {};
+document.addEventListener('keydown', e => keys[e.key] = true);
+document.addEventListener('keyup', e => keys[e.key] = false);
+
+// --- Niveau ---
+const platforms = [
+    {x:0, y:400, width:800, height:50},
+    {x:150, y:300, width:100, height:20},
+    {x:300, y:200, width:150, height:20},
+    {x:550, y:250, width:100, height:20},
+];
+
+const enemies = [
+    {x:400, y:370, width:20, height:20, vx:1},
+];
+
+const items = [
+    {x:320, y:170, width:10, height:10, collected:false}
+];
+
+// --- Gravité ---
+const gravity = 0.3;
+
+// --- Fonction de collision ---
+function checkCollision(a, b) {
+    return a.x < b.x + b.width &&
+           a.x + a.width > b.x &&
+           a.y < b.y + b.height &&
+           a.y + a.height > b.y;
+}
+
+// --- Boucle de jeu ---
+function update() {
+    // Déplacement horizontal
+    if (keys['ArrowLeft'] || keys['a']) player.vx = -player.speed;
+    else if (keys['ArrowRight'] || keys['d']) player.vx = player.speed;
+    else player.vx = 0;
+
+    // Saut
+    if ((keys['ArrowUp'] || keys['w'] || keys[' ']) && player.onGround) {
+        player.vy = -player.jumpPower;
+        player.onGround = false;
+    }
+
+    // Gravité
+    player.vy += gravity;
+
+    // Déplacement
+    player.x += player.vx;
+    player.y += player.vy;
+
+    // Collision plateformes
+    player.onGround = false;
+    for (let plat of platforms) {
+        if (checkCollision(player, plat)) {
+            if (player.vy > 0) { // en tombant
+                player.y = plat.y - player.height;
+                player.vy = 0;
+                player.onGround = true;
+            } else if (player.vy < 0) { // en montant
+                player.y = plat.y + plat.height;
+                player.vy = 0;
+            }
+        }
+    }
+
+    // Déplacement ennemis simple
+    for (let enemy of enemies) {
+        enemy.x += enemy.vx;
+        if (enemy.x < 0 || enemy.x + enemy.width > canvas.width) enemy.vx *= -1;
+
+        // Collision joueur-enemi
+        if (checkCollision(player, enemy)) {
+            player.x = 50; player.y = 350; // reset joueur
+        }
+    }
+
+    // Collecte d'objets
+    for (let item of items) {
+        if (!item.collected && checkCollision(player, item)) {
+            item.collected = true;
+            console.log("Objet collecté !");
+        }
+    }
+}
+
+// --- Rendu ---
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Joueur
+    ctx.fillStyle = '#39FF14'; // vert fluo
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    // Plateformes
+    ctx.fillStyle = '#888';
+    for (let plat of platforms) ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+
+    // Ennemis
+    ctx.fillStyle = '#FF4136'; // rouge
+    for (let enemy of enemies) ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+
+    // Objets
+    ctx.fillStyle = '#FFDC00'; // jaune
+    for (let item of items) if (!item.collected) ctx.fillRect(item.x, item.y, item.width, item.height);
+}
+
+// --- Loop ---
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
