@@ -1,0 +1,81 @@
+---
+layout: null
+title: Carte complète
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page.title }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; }
+    canvas { border: 1px solid #333; image-rendering: pixelated; }
+  </style>
+</head>
+<body>
+  <h1>{{ page.title }}</h1>
+  <canvas id="full-map"></canvas>
+  <p>Chaque pixel représente un niveau</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4/dist/js-yaml.min.js"></script>
+  <script>
+    const BASE_URL = "{{ site.baseurl }}"; // ex: /grenoble_1859
+
+    const minX = -50, maxX = 50;
+    const minY = -50, maxY = 50;
+    const z = 0; // niveau z à afficher
+
+    const canvas = document.getElementById("full-map");
+    const width = maxX - minX + 1;
+    const height = maxY - minY + 1;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+
+    function getLevelDir(x) {
+      return `${BASE_URL}/assets/levels/x_${x}`;
+    }
+
+    async function loadYAMLLevel(levelId, x) {
+      const dir = getLevelDir(x);
+      const url = `${dir}/${levelId}.yml`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const text = await res.text();
+        return jsyaml.load(text);
+      } catch (e) {
+        console.warn("Erreur chargement:", levelId, e);
+        return null;
+      }
+    }
+
+    function getBiomeColor(type) {
+      switch(type) {
+        case "ville": return "#888888";
+        case "foret": return "#008000";
+        case "eau": return "#0000ff";
+        case "plaine": return "#a0d080";
+        default: return "#333333"; // inconnu
+      }
+    }
+
+    async function drawFullMap() {
+      for (let x = minX; x <= maxX; x++) {
+        for (let y = minY; y <= maxY; y++) {
+          const levelId = `level_${x}_${y}_${z}`;
+          const level = await loadYAMLLevel(levelId, x);
+          const color = level && level.type ? getBiomeColor(level.type) : "#333";
+
+          ctx.fillStyle = color;
+          ctx.fillRect(x - minX, y - minY, 1, 1);
+        }
+      }
+      console.log("Carte complète générée !");
+    }
+
+    drawFullMap();
+  </script>
+</body>
+</html>
